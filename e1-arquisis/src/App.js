@@ -1,0 +1,41 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+
+import LoginButton from './components/LoginButton';
+import LogoutButton from './components/LogoutButton';
+import FetchDataComponent from './components/FetchDataComponent';
+
+const HomePage = () => (
+  <div>
+    <h1>Welcome Home</h1>
+    <LoginButton />
+    <LogoutButton />
+  </div>
+);
+
+const App = () => {
+  const { isLoading, isAuthenticated } = useAuth0();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route 
+          path="/data" 
+          element={
+            isAuthenticated ? 
+            <FetchDataComponent url="petstore/pets" /> :
+            <Navigate to="/" />
+          } 
+        />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
