@@ -5,6 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import FetchDataComponent from './components/FetchDataComponent';
+import CompanyList from './pages/CompanyList/CompanyList';
 
 const HomePage = () => (
   <div>
@@ -33,6 +34,7 @@ const App = () => {
             <Navigate to="/" />
           } 
         />
+        <Route path="/stocks" element={<CompanyList/>}></Route>
       </Routes>
     </Router>
   );
