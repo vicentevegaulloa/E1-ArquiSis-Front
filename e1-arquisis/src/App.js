@@ -6,6 +6,8 @@ import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import FetchDataComponent from './components/FetchDataComponent';
 import CompanyList from './pages/CompanyList/CompanyList';
+import UserProfile from './pages/UserProfile/UserProfile';
+import Footer from './components/Footer/Footer';
 
 const HomePage = () => (
   <div>
@@ -35,7 +37,9 @@ const App = () => {
           } 
         />
         <Route path="/stocks" element={<CompanyList/>}></Route>
+        <Route path ="/profile" element={<UserProfile/>}></Route> 
       </Routes>
+      <Footer/>
     </Router>
   );
 };
