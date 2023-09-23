@@ -6,6 +6,8 @@ import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import FetchDataComponent from './components/FetchDataComponent';
 import CompanyList from './pages/CompanyList/CompanyList';
+import HistoryRecord from './pages/HistoryRecord/HistoryRecord';
+import HistoryCompanies from './pages/HistoryRecord/HistoryCompanies';
 
 const HomePage = () => (
   <div>
@@ -35,6 +37,8 @@ const App = () => {
           } 
         />
         <Route path="/stocks" element={<CompanyList/>}></Route>
+        <Route path="/history/:symbol" element={<HistoryRecord />} />
+        <Route path="/history" element={<HistoryCompanies/>}></Route>
       </Routes>
     </Router>
   );
