@@ -37,8 +37,8 @@ const App = () => {
           } 
         />
         <Route path="/stocks" element={<CompanyList/>}></Route>
-        <Route path="/stocks/:symbol" element={<HistoryRecord />} />
-        <Route path="/historylist" element={<HistoryCompanies/>}></Route>
+        <Route path="/history/:symbol" element={<HistoryRecord />} />
+        <Route path="/history" element={<HistoryCompanies/>}></Route>
       </Routes>
     </Router>
   );

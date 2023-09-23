@@ -4,7 +4,7 @@ import './HistoryRecord.css'
 
 const API_BASE_URL = 'https://api.valeria-riquel.me';
 
-const stocksPerPage = 3;
+const stocksPerPage = 10;
 
 const HistoryRecord = () => {
   const { symbol } = useParams();
@@ -14,16 +14,13 @@ const HistoryRecord = () => {
   const filterQueryParam = queryParams.get('filter');
 
   const navigate = useNavigate();
-  const navigateToBuy = () => {
-    navigate('/buy');
-  };
     
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [currentPageS, setCurrentPageS] = useState(1);
   const [orderBy, setOrderBy] = useState("orderby_asc");
-  const [filterText, setFilterText] = useState(filterQueryParam || ''); 
+  const [filterText] = useState(filterQueryParam || ''); 
 
   
   const handleChangeOrder = (event) => {
@@ -49,6 +46,7 @@ const HistoryRecord = () => {
         }
 
         setCompanies(sortedStocks);
+        console.log(sortedStocks);
         setLoading(false);
       })
       .catch((error) => {
@@ -69,6 +67,14 @@ const HistoryRecord = () => {
   const endIndexS = startIndexS + stocksPerPage;
   const currentStocks = filteredCompanies.slice(startIndexS, endIndexS);
 
+  const handleBuy = (id) => {
+    navigate(`/stocks/${id}`);
+  };
+
+  const goBack = () => {
+    navigate(`/history`);
+  };
+
   return (
     <div className="content">
       <h2>Historical records per company</h2>
@@ -88,8 +94,8 @@ const HistoryRecord = () => {
                   </button>
               </div>
               <div className='selector'> 
+              <p>Order by</p>
                 <select onChange={(event) => handleChangeOrder(event)}>
-                  <label>Order by</label>
                   <option value="orderby_asc">From oldest</option>
                   <option value="orderby_desc">From newest</option>
                 </select>
@@ -103,6 +109,8 @@ const HistoryRecord = () => {
               <th>Symbol</th>
               <th>Price</th>
               <th>Currency</th>
+              <th>Date</th>
+              <th>Time in UTC</th>
               <th></th>
             </tr>
           </thead>
@@ -113,14 +121,19 @@ const HistoryRecord = () => {
                 <td>{company.symbol}</td>
                 <td>{company.price}</td>
                 <td>{company.currency}</td>
+                <td>{company.datetime.split("T")[0]}</td>
+                <td>{company.datetime.split("T")[1].replace("Z", "")}</td>
                 <td style={{ textAlign: "center" }}>
-                  <button onClick={navigateToBuy}>Buy</button>
+                  <button onClick={() => handleBuy(company.id)}>Buy</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
+      <div className='goback'>
+        <button onClick={() => goBack()}>Go back</button>
+      </div>
     </div>
   );
 };

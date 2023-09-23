@@ -20,6 +20,14 @@ caption {
   justify-content: center;
 }
 
+.selector {
+  display: grid;
+  grid-template-columns: auto 100px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .tablecaptionspace {
   display: grid;
   grid-template-columns: auto auto;
@@ -61,6 +69,12 @@ caption {
   border-radius: 5%;
   padding: 12px;
   text-align: center;
+}
+
+.goback {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
 }
     
 @media screen and (max-width: 600px) {

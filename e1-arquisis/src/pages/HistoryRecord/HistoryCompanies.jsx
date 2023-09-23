@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './HistoryRecord.css';
 
 const API_BASE_URL = 'https://api.valeria-riquel.me';
-const companiesPerPage = 6;
+const companiesPerPage = 10;
 
 const HistoryCompanies = () => {
 
@@ -33,6 +33,7 @@ const HistoryCompanies = () => {
         }
 
         setCompanies(sortedCompanies);
+        console.log(sortedCompanies);
         setLoading(false);
       })
       .catch((error) => {
@@ -52,7 +53,11 @@ const HistoryCompanies = () => {
   const currentCompanies = companies.slice(startIndexC, endIndexC);
 
   const handleFilterSubmit = (symbol) => {
-    navigate(`/stocks/${symbol}`);
+    navigate(`/history/${symbol}`);
+  };
+  
+  const goBack = () => {
+    navigate(`/`);
   };
 
   return (
@@ -74,8 +79,8 @@ const HistoryCompanies = () => {
                   </button>
               </div>
               <div className='selector'> 
+              <p>Order by</p>
                 <select onChange={(event) => handleChangeOrder(event)}>
-                  <label>Order by</label>
                   <option value="orderby_asc">A to Z</option>
                   <option value="orderby_desc">Z to A</option>
                 </select>
@@ -102,6 +107,9 @@ const HistoryCompanies = () => {
           </tbody>
         </table>
       )}
+      <div className='goback'>
+        <button onClick={() => goBack()}>Go back</button>
+      </div>
     </div>
   );
 };
