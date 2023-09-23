@@ -15,10 +15,23 @@
   color: #24292e;
 }
 
+caption {
+  display: table-caption;
+  justify-content: center;
+}
+
+.tablecaptionspace {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+}
+
 .pagination button {
   border-radius: 50%;
   border: none;
   margin: 5px;
+  text-align: center;
+  align-items: center;
 }
   
 .table {
