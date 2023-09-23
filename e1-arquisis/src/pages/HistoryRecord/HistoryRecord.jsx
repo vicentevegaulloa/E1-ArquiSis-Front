@@ -19,7 +19,7 @@ const HistoryRecord = () => {
   const [loading, setLoading] = useState(true);
 
   const [currentPageS, setCurrentPageS] = useState(1);
-  const [orderBy, setOrderBy] = useState("orderby_asc");
+  const [orderBy, setOrderBy] = useState("orderby_newest");
   const [filterText] = useState(filterQueryParam || ''); 
 
   
@@ -29,7 +29,7 @@ const HistoryRecord = () => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/stocks`)
+    fetch(`${API_BASE_URL}/stocks/${symbol}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -39,10 +39,10 @@ const HistoryRecord = () => {
       .then((data) => {
         const sortedStocks = data.filter((company) => company.symbol === symbol);
         
-        if (orderBy === "orderby_id_asc") {
-          sortedStocks.sort((a, b) => a.id - b.id);
-        } else if (orderBy === "orderby_id_desc") {
+        if (orderBy === "orderby_newest") {
           sortedStocks.sort((a, b) => b.id - a.id);
+        } else if (orderBy === "orderby_older") {
+          sortedStocks.sort((a, b) => a.id - b.id);
         }
 
         setCompanies(sortedStocks);
@@ -96,8 +96,8 @@ const HistoryRecord = () => {
               <div className='selector'> 
               <p>Order by</p>
                 <select onChange={(event) => handleChangeOrder(event)}>
-                  <option value="orderby_id_asc">Oldest to newest</option>
-                  <option value="orderby_id_desc">Newest to oldest</option>
+                  <option value="orderby_newest">Newest to oldest</option>
+                  <option value="orderby_oldest">Oldest to newest</option>
                 </select>
               </div>
             </div>

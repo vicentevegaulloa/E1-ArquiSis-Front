@@ -30,10 +30,6 @@ const HistoryCompanies = () => {
           sortedCompanies.sort((a, b) => a.shortName.localeCompare(b.shortName));
         } else if (orderBy === "orderby_desc") {
           sortedCompanies.sort((a, b) => b.shortName.localeCompare(a.shortName));
-        } else if (orderBy === "orderby_id_asc") {
-          sortedCompanies.sort((a, b) => a.id - b.id);
-        } else if (orderBy === "orderby_id_desc") {
-          sortedCompanies.sort((a, b) => b.id - a.id);
         }
 
         setCompanies(sortedCompanies);
@@ -87,8 +83,6 @@ const HistoryCompanies = () => {
                 <select onChange={(event) => handleChangeOrder(event)}>
                   <option value="orderby_asc">A to Z</option>
                   <option value="orderby_desc">Z to A</option>
-                  <option value="orderby_id_asc">Oldest to newest</option>
-                  <option value="orderby_id_desc">Newest to oldest</option>
                 </select>
               </div>
             </div>
