@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import './HistoryRecord.css'
 
 const API_BASE_URL = 'https://api.valeria-riquel.me';
@@ -7,6 +7,7 @@ const API_BASE_URL = 'https://api.valeria-riquel.me';
 const stocksPerPage = 3;
 
 const HistoryRecord = () => {
+  const { symbol } = useParams();
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -31,7 +32,7 @@ const HistoryRecord = () => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/stocks/${symbol}?page=${page}&size=${size}`)
+    fetch(`${API_BASE_URL}/stocks`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -39,12 +40,12 @@ const HistoryRecord = () => {
         return response.json();
       })
       .then((data) => {
-        const sortedStocks = data.filter(company => company.shortName.includes(filterText));
+        const sortedStocks = data.filter((company) => company.symbol === symbol);
         
         if (orderBy === "orderby_asc") {
-          sortedStocks.sort((a, b) => a.shortName.localeCompare(b.shortName));
+          sortedStocks.sort((a, b) => a.datetime.localeCompare(b.datetime));
         } else if (orderBy === "orderby_desc") {
-          sortedStocks.sort((a, b) => b.shortName.localeCompare(a.shortName));
+          sortedStocks.sort((a, b) => b.datetime.localeCompare(a.datetime));
         }
 
         setCompanies(sortedStocks);
@@ -54,7 +55,7 @@ const HistoryRecord = () => {
         console.error('Fetch error:', error);
         setLoading(false);
       });
-  }, [orderBy, filterText]);
+  }, [orderBy, filterText, symbol]);
   
   const filteredCompanies = companies.filter(company => company.symbol.includes(filterText));
   let totalPagesS = Math.ceil(filteredCompanies.length / stocksPerPage);
@@ -67,11 +68,6 @@ const HistoryRecord = () => {
   const startIndexS = (currentPageS - 1) * stocksPerPage;
   const endIndexS = startIndexS + stocksPerPage;
   const currentStocks = filteredCompanies.slice(startIndexS, endIndexS);
-
-  const handleFilterSubmit = () => {
-    navigate(`/filtered-page?filter=${filterText}`);
-  };
- 
 
   return (
     <div className="content">
@@ -94,12 +90,8 @@ const HistoryRecord = () => {
               <div className='selector'> 
                 <select onChange={(event) => handleChangeOrder(event)}>
                   <label>Order by</label>
-                  <option value="orderby_asc">
-                    A to Z
-                  </option>
-                  <option value="orderby_desc">
-                    Z to A
-                  </option>
+                  <option value="orderby_asc">From oldest</option>
+                  <option value="orderby_desc">From newest</option>
                 </select>
               </div>
             </div>

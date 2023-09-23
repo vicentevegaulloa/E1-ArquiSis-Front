@@ -22,8 +22,9 @@ const HistoryCompanies = () => {
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/stocks`)
-      .then((response) => {
-        const sortedCompanies = [...response.data];
+      .then((response) => response.json())
+      .then((data) => {
+        const sortedCompanies = [...data];
         
         if (orderBy === "orderby_asc") {
           sortedCompanies.sort((a, b) => a.shortName.localeCompare(b.shortName));
@@ -40,8 +41,7 @@ const HistoryCompanies = () => {
       });
   }, [orderBy]);
 
-  const totalPagesC = Math.ceil(companies.length / companiesPerPage);
-
+  const totalPagesC = companies.length === 0 ? 1 : Math.ceil(companies.length / companiesPerPage);
   const handlePageChangeC = (newPage) => {
     setCurrentPageC(newPage);
   };
@@ -52,7 +52,7 @@ const HistoryCompanies = () => {
   const currentCompanies = companies.slice(startIndexC, endIndexC);
 
   const handleFilterSubmit = (symbol) => {
-    navigate(`/filtered-page?filter=${symbol}`);
+    navigate(`/stocks/${symbol}`);
   };
 
   return (
@@ -76,12 +76,8 @@ const HistoryCompanies = () => {
               <div className='selector'> 
                 <select onChange={(event) => handleChangeOrder(event)}>
                   <label>Order by</label>
-                  <option value="orderby_asc">
-                    A to Z
-                  </option>
-                  <option value="orderby_desc">
-                    Z to A
-                  </option>
+                  <option value="orderby_asc">A to Z</option>
+                  <option value="orderby_desc">Z to A</option>
                 </select>
               </div>
             </div>
