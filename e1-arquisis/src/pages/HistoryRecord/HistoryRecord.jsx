@@ -39,10 +39,10 @@ const HistoryRecord = () => {
       .then((data) => {
         const sortedStocks = data.filter((company) => company.symbol === symbol);
         
-        if (orderBy === "orderby_asc") {
-          sortedStocks.sort((a, b) => a.datetime.localeCompare(b.datetime));
-        } else if (orderBy === "orderby_desc") {
-          sortedStocks.sort((a, b) => b.datetime.localeCompare(a.datetime));
+        if (orderBy === "orderby_id_asc") {
+          sortedStocks.sort((a, b) => a.id - b.id);
+        } else if (orderBy === "orderby_id_desc") {
+          sortedStocks.sort((a, b) => b.id - a.id);
         }
 
         setCompanies(sortedStocks);
@@ -96,8 +96,8 @@ const HistoryRecord = () => {
               <div className='selector'> 
               <p>Order by</p>
                 <select onChange={(event) => handleChangeOrder(event)}>
-                  <option value="orderby_asc">From oldest</option>
-                  <option value="orderby_desc">From newest</option>
+                  <option value="orderby_id_asc">Oldest to newest</option>
+                  <option value="orderby_id_desc">Newest to oldest</option>
                 </select>
               </div>
             </div>
