@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import './HistoryRecord.css'
+import './Stocks.css'
 
 const API_BASE_URL = 'https://api.valeria-riquel.me';
 
-const stocksPerPage = 10;
+const stocksPerPage = 8;
 
-const HistoryRecord = () => {
+const CompanyStocks = () => {
   const { symbol } = useParams();
 
   const location = useLocation();
@@ -72,15 +72,16 @@ const HistoryRecord = () => {
   };
 
   const goBack = () => {
-    navigate(`/history`);
+    navigate(`/stocks`);
   };
 
   return (
     <div className="content">
-      <h2>Historical records per company</h2>
+      <h2>Available stocks details</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
+        
         <table className="table">
           <caption>
             <div className='tablecaptionspace'>
@@ -138,4 +139,4 @@ const HistoryRecord = () => {
   );
 };
 
-export default HistoryRecord;
+export default CompanyStocks;
