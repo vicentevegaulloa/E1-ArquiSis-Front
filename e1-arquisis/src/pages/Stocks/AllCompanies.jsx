@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './HistoryRecord.css';
+import './Stocks.css';
 
 const API_BASE_URL = 'https://api.valeria-riquel.me';
-const companiesPerPage = 10;
+const companiesPerPage = 8;
 
-const HistoryCompanies = () => {
+const AllCompanies = () => {
 
   const navigate = useNavigate();
     
@@ -53,7 +53,7 @@ const HistoryCompanies = () => {
   const currentCompanies = companies.slice(startIndexC, endIndexC);
 
   const handleFilterSubmit = (symbol) => {
-    navigate(`/history/${symbol}`);
+    navigate(`/company/${symbol}`);
   };
   
   const goBack = () => {
@@ -62,7 +62,7 @@ const HistoryCompanies = () => {
 
   return (
     <div className="content">
-      <h2>Historical records per company</h2>
+      <h2>Companies with available stocks</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -89,10 +89,6 @@ const HistoryCompanies = () => {
           </caption>
           
           <thead>
-            <tr>
-              <th style={{ width: "70%" }}>Short Name</th>
-              <th></th>
-            </tr>
           </thead>
 
           <tbody>
@@ -114,4 +110,4 @@ const HistoryCompanies = () => {
   );
 };
 
-export default HistoryCompanies;
+export default AllCompanies;
