@@ -1,8 +1,12 @@
 import React from 'react';
-import './Homepage.css';
+import './Landingpage.css';
 import '@aws-amplify/ui-react/styles.css';
+import { useAuth0 } from '@auth0/auth0-react';
 
-const HomePage = ({ signOut, user }) => {
+
+
+const LandingPage = () => {
+  const { loginWithRedirect } = useAuth0();
   return (
     <div className="homepage-container">
       <header>
@@ -11,7 +15,7 @@ const HomePage = ({ signOut, user }) => {
             <a href="/">Buy Stonks</a>
           </div>
           <div className="nav-links">
-            <button onClick={() => signOut()} className="btn">
+            <button onClick={() => loginWithRedirect()} className="btn">
               Sign Out
             </button>
           </div>
@@ -21,9 +25,9 @@ const HomePage = ({ signOut, user }) => {
       <main>
         <section className="content">
           <div className="content-left">
-            <h1>Start Investing Today</h1>
-            <p>Explore endless investment opportunities with Buy Stonks. Invest in your favorite companies and currencies effortlessly</p>
-            <a href="/history" className="btn">
+            <h1>Join Buy Stonks</h1>
+            <p>Discover the world of smart investments. Sign up now to access a world of financial opportunities</p>
+            <a href="/stocks" className="btn">
               Explore
             </a>
           </div>
@@ -38,4 +42,4 @@ const HomePage = ({ signOut, user }) => {
   );
 };
 
-export default HomePage;
+export default Landingpage;

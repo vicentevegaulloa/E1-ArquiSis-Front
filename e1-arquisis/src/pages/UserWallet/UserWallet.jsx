@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './UserWallet.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import '@aws-amplify/ui-react/styles.css';
 
 const API_BASE_URL = 'https://api.valeria-riquel.me/wallets';
 
-const UserWallet = () => {
+const UserWallet = ({ user, signOut }) => {
   const { userId } = useParams();
   const [walletBalance, setWalletBalance] = useState(null);
   const [amountToAdd, setAmountToAdd] = useState(0);
@@ -61,7 +62,20 @@ const UserWallet = () => {
   }
 
   return (
-  
+    <div className="user-wallet-container">
+      <header>
+        <nav className="navbar">
+          <div className="logo">
+            <a href="/">Buy Stonks</a>
+          </div>
+          <div className="nav-links">
+            <button onClick={() => signOut()} className="btn">
+              Sign Out
+            </button>
+          </div>
+        </nav>
+      </header>
+
       <div className="card-container">
         <h2 className="title">Edit your balance</h2>
         <div className="user-info">
@@ -86,6 +100,7 @@ const UserWallet = () => {
           </form>
         </div>
       </div>
+    </div>
   );
 };
 
