@@ -2,9 +2,17 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
+
 import FetchDataComponent from "./components/FetchDataComponent";
+
 import CompanyList from "./pages/CompanyList/CompanyList";
-import awsExports from "./aws-exports"; // This path might vary depending on where the file is located
+import HistoryCompanies from './pages/HistoryRecord/HistoryCompanies';
+import HistoryRecord from './pages/HistoryRecord/HistoryRecord';
+import UserWallet from './pages/UserWallet/UserWallet';
+import PurchasesList from './pages/PurchasesList/PurchasesList';
+import Homepage from './pages/Homepage/Homepage';
+
+import awsExports from "./aws-exports";
 
 import '@aws-amplify/ui-react/styles.css'
 
@@ -31,6 +39,9 @@ const App = ({ signOut, user }) => {
         <Route path="/stocks" element={<CompanyList/>}></Route>
         <Route path="/history/:symbol" element={<HistoryRecord />} />
         <Route path="/history" element={<HistoryCompanies/>}></Route>
+        <Route path="/wallets/:userId" element={<UserWallet />} />
+        <Route path="/purchases/:userId" element={<PurchasesList />} />
+        <Route path="/home" element={<Homepage />} />
       </Routes>
     </Router>
   );
