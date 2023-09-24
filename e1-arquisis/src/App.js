@@ -8,6 +8,7 @@ import awsExports from "./aws-exports"; // This path might vary depending on whe
 
 import '@aws-amplify/ui-react/styles.css'
 
+
 Amplify.configure(awsExports);
 
 const HomePage = ({signOut, user}) => (
@@ -27,7 +28,9 @@ const App = ({ signOut, user }) => {
           path="/data"
           element={<FetchDataComponent/>}
         />
-        <Route path="/stocks" element={<CompanyList />} />
+        <Route path="/stocks" element={<CompanyList/>}></Route>
+        <Route path="/history/:symbol" element={<HistoryRecord />} />
+        <Route path="/history" element={<HistoryCompanies/>}></Route>
       </Routes>
     </Router>
   );
