@@ -19,19 +19,12 @@ import '@aws-amplify/ui-react/styles.css'
 
 Amplify.configure(awsExports);
 
-const HomePage = ({signOut, user}) => (
-  <div>
-    {console.log(user)}
-    <h1>Welcome Home {user.email}</h1>
-    <button onClick={() => signOut()}>Sign out</button>
-  </div>
-);
 
 const App = ({ signOut, user }) => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage user={user} signOut={signOut}/>} />
+        <Route path="/" element={<Homepage user={user} signOut={signOut}/>} />
         <Route
           path="/data"
           element={<FetchDataComponent/>}
@@ -39,9 +32,8 @@ const App = ({ signOut, user }) => {
         <Route path="/stocks" element={<CompanyList/>}></Route>
         <Route path="/history/:symbol" element={<HistoryRecord />} />
         <Route path="/history" element={<HistoryCompanies/>}></Route>
-        <Route path="/wallets/:userId" element={<UserWallet />} />
+        <Route path="/wallets/:userId" element={<UserWallet user={user} signOut={signOut}/>} />
         <Route path="/purchases/:userId" element={<PurchasesList />} />
-        <Route path="/home" element={<Homepage />} />
       </Routes>
     </Router>
   );

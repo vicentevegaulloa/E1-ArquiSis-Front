@@ -14,7 +14,8 @@ const PurchasesList = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/${userId}`);
-        setPurchases(response.data);
+        const validPurchases = response.data.filter(purchase => purchase.valid === true);
+        setPurchases(validPurchases);
         setLoading(false);
       } catch (error) {
         console.error('Error al obtener datos de compras:', error);
