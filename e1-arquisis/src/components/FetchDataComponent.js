@@ -1,31 +1,89 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import callApi from "../fetchData";
 
-const FetchDataComponent = ({ url }) => {
-  const { getAccessTokenSilently } = useAuth0();
-
-  const fetchData = async () => {
-    try {
-      const token = await getAccessTokenSilently({
-        audience: 'https://9q2asixgxa.execute-api.us-east-1.amazonaws.com/test',
-        scope: 'read:all'
-      });
-      console.log(token);
-      const response = await fetch(`https://9q2asixgxa.execute-api.us-east-1.amazonaws.com/test/${url}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
+const FetchDataComponent = () => {
   return (
     <div>
-      <button onClick={fetchData}>Fetch Data</button>
+      <h1>Ejemplos del uso de la API</h1>
+      <button
+        onClick={async () => {
+          const data = await callApi("/stocks");
+          console.log("data: ", data);
+        }}
+      >
+        Call API GET /stocks
+      </button>
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/stocks/PG?page=3&size=5");
+          console.log("data: ", data);
+        }}
+      >
+        Call API GET /stocks/:symbol (usando PG)
+      </button>
+
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/users", "POST", true, {});
+          console.log("data: ", data);
+        }}
+      >
+        Call API POST /users
+      </button>
+
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/users", "GET");
+          console.log("data: ", data);
+        }}
+      >
+        Call API GET /users
+      </button>
+
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/wallets/15", "GET");
+          console.log("data: ", data);
+        }}
+      >
+        Call API GET /wallets/:userId
+      </button>
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/wallets/8", "PUT", true, {
+            balance: 1000,
+          });
+          console.log("data: ", data);
+        }}
+      >
+        Call API PUT /wallets/:walletId
+      </button>
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/purchases/15", "POST", true, {
+            userId: 15,
+            stockId: 1,
+            quantity: 2,
+          });
+          console.log("data: ", data);
+        }}
+      >
+        Call API POST /purchases/:userId
+      </button>
+      <br />
+      <button
+        onClick={async () => {
+          const data = await callApi("/purchases/15", "GET");
+          console.log("data: ", data);
+        }}
+      >
+        Call API GET /purchases/:userId
+      </button>
     </div>
   );
 };

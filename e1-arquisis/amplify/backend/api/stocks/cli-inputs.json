@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/stocks": {
+      "name": "/stocks",
+      "lambdaFunction": "e1arquisis6ce6f00a",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

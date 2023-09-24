@@ -1,40 +1,32 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { withAuthenticator } from "@aws-amplify/ui-react";
+import { Amplify } from "aws-amplify";
+import FetchDataComponent from "./components/FetchDataComponent";
+import CompanyList from "./pages/CompanyList/CompanyList";
+import awsExports from "./aws-exports"; // This path might vary depending on where the file is located
 
-import LoginButton from './components/LoginButton';
-import LogoutButton from './components/LogoutButton';
-import FetchDataComponent from './components/FetchDataComponent';
-import CompanyList from './pages/CompanyList/CompanyList';
-import HistoryRecord from './pages/HistoryRecord/HistoryRecord';
-import HistoryCompanies from './pages/HistoryRecord/HistoryCompanies';
+import '@aws-amplify/ui-react/styles.css'
 
-const HomePage = () => (
+
+Amplify.configure(awsExports);
+
+const HomePage = ({signOut, user}) => (
   <div>
-    <h1>Welcome Home</h1>
-    <LoginButton />
-    <LogoutButton />
+    {console.log(user)}
+    <h1>Welcome Home {user.email}</h1>
+    <button onClick={() => signOut()}>Sign out</button>
   </div>
 );
 
-const App = () => {
-  const { isLoading, isAuthenticated } = useAuth0();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
+const App = ({ signOut, user }) => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route 
-          path="/data" 
-          element={
-            isAuthenticated ? 
-            <FetchDataComponent url="petstore/pets" /> :
-            <Navigate to="/" />
-          } 
+        <Route path="/" element={<HomePage user={user} signOut={signOut}/>} />
+        <Route
+          path="/data"
+          element={<FetchDataComponent/>}
         />
         <Route path="/stocks" element={<CompanyList/>}></Route>
         <Route path="/history/:symbol" element={<HistoryRecord />} />
@@ -44,4 +36,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default withAuthenticator(App);
