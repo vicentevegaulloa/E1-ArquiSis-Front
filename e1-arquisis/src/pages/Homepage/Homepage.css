@@ -1,127 +1,46 @@
-/* Estilo para el div principal */
-.homepage-container {
-    margin: 0;
-    padding: 0;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  }
-  
-  header {
-    background-color: #fff;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    padding: 20px 0;
-    transition: background-color 0.3s ease, border-radius 0.3s ease;
-    z-index: 1;
-  }
-  
-  /* Barra de navegación con transiciones */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-  }
-  
-  /* Aumentar el tamaño de la fuente del logo */
-  .logo a {
-    font-size: 28px;
-    text-decoration: none;
-    color: #1da1f2;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease, border-radius 0.3s ease;
-    padding: 10px 20px;
-  }
-  
-  .logo a:hover {
-    background-color: #1da1f2;
-    color: #fff;
-    border-radius: 10px;
-  }
-  
-  /* Botón de sign out */
-  .nav-links button {
-    text-decoration: none;
-    color: #1da1f2;
-    margin-left: 20px;
-    transition: color 0.3s ease;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .nav-links button:hover {
-    color: #fff;
-    background-color: #1da1f2;
-  }
-  
-  main {
-    margin-top: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: calc(100vh - 120px);
-  }
-  
-  /* Contenedor de contenido */
-  .content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 20px;
-  }
-  
-  /* Contenido de texto a la izquierda */
-  .content-left {
-    flex: 1;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* Estilos para el título y el párrafo */
-  .content-left h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .content-left p {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  /* Botón de login */
-  .content-left .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #1da1f2;
-    color: white;
-    text-decoration: none;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-    border-radius: 20px;
-  }
-  
-  .content-left .btn:hover {
-    background-color: #fff;
-    color: #1da1f2;
-  }
-  
-  /* Contenedor de imagen a la derecha */
-  .content-right {
-    flex: 1;
-    height: 100%;
-  }
-  
-  /* Estilo para la imagen */
-  .content-right .image {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-image: url("../../../public/background.jpeg");
-    margin: 0;
-  }
+.homepage-grid {
+  display: grid;
+  grid-template-rows: 20% 50% auto;
+  height: 670px;  
+  background-image: url("../../../public/background.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  justify-content: center;
+}
+.content-text {
+  display: grid;
+  grid-template-rows: 50px 110px 80px;
+  padding: 30px;
+  text-align: center;
+  align-items: center;
+  background-color: whitesmoke;
+  justify-items: center;
+  border-radius: 10px;
+  justify-content: center;
+  align-content: center;
+}
+
+.content-text h1 {
+  font-size: 24px;
+}
+
+.content-text p {
+  font-size: 16px;
+}
+
+.content-text .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #1da1f2;
+  color: white;
+  text-decoration: none;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+  border-radius: 20px;
+}
+
+.content-text .btn:hover {
+  background-color: #fff;
+  color: #1da1f2;
+}
   

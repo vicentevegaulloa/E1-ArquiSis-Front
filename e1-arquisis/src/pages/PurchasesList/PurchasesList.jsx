@@ -29,14 +29,13 @@ const PurchasesList = () => {
   return (
     <div>
       <div className="table-title">
-        {purchases.length === 0 ? (
-          <h3>No Purchases</h3>
-        ) : (
-          <h3>Lista de Compras</h3>
-        )}
+        <h2>My purchases</h2>
         {loading ? (
-          <p>Cargando...</p>
+          <p>Loading...</p>
         ) : (
+          purchases.length === 0 ? (
+            <p>No Purchases</p>
+          ) : (
           purchases.length > 0 && (
             <table className="table-fill">
               <thead>
@@ -56,7 +55,7 @@ const PurchasesList = () => {
                 ))}
               </tbody>
             </table>
-          )
+          ))
         )}
       </div>
     </div>
