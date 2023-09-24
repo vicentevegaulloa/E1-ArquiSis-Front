@@ -5,9 +5,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import FetchDataComponent from './components/FetchDataComponent';
-import CompanyList from './pages/CompanyList/CompanyList';
-import UserProfile from './pages/UserProfile/UserProfile';
-import Footer from './components/Footer/Footer';
+import UserWallet from './pages/UserWallet/UserWallet';
+import Homepage from './pages/Homepage/Homepage';
+import PurchasesList from './pages/PurchasesList/PurchasesList';
 
 const HomePage = () => (
   <div>
@@ -27,7 +27,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<Homepage />} />
         <Route 
           path="/data" 
           element={
@@ -36,10 +36,10 @@ const App = () => {
             <Navigate to="/" />
           } 
         />
-        <Route path="/stocks" element={<CompanyList/>}></Route>
-        <Route path ="/profile" element={<UserProfile/>}></Route> 
+        <Route path="/wallets/:userId" element={<UserWallet />} />
+        <Route path="/purchases/:userId" element={<PurchasesList />} />
       </Routes>
-      <Footer/>
+    
     </Router>
   );
 };
