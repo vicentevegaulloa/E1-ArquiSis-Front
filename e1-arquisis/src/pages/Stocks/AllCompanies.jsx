@@ -23,7 +23,7 @@ const AllCompanies = () => {
           console.log('DataGet: ', data);
           setGetData(data);
         } catch (retryError) {
-          console.error(retryError);
+          console.error("RetryError:", retryError);
         }
       }
     };

@@ -24,7 +24,7 @@ const CompanyStocks = () => {
         console.log('DataPost: ', data);
         setPostData(data);
       } catch (error) {
-        console.error(error);
+        console.error("BUTWHY", error);
         try {
           const data = await callApi('/users', 'GET');
           console.log('DataGet: ', data);
@@ -48,6 +48,8 @@ const CompanyStocks = () => {
     userId = postData.id;
   };
     
+  console.log("UserId: ", userId);
+
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,24 +64,32 @@ const CompanyStocks = () => {
 
   useEffect(() => {
     const fetchStockData = async () => {
+      /* const data = await callApi("/stocks/PG?page=3&size=5"); */
       try {
-        const data = await callApi(`/stocks/${symbol}`);
-        const sortedStocks = data.filter((company) => company.symbol === symbol);
-        
-        /*if (orderBy === "orderby_newest") {
-          sortedStocks.sort((a, b) => b.id - a.id);
-        } else if (orderBy === "orderby_older") {
-          sortedStocks.sort((a, b) => a.id - b.id);
-        }*/
+        const dataFull = await callApi(`/stocks/${symbol}`);
+        const totalStockPages = dataFull.totalPages;
 
-        setCompanies(sortedStocks);
-          console.log(sortedStocks);
-          setLoading(false);
-        } catch (error) {
-          console.error('Fetch error:', error);
-          setLoading(false);
+        let data = [];
+        for (let page = 1; page <= totalStockPages; page++) {
+          const pageSymbol = await callApi(`/stocks/${symbol}?page=${page}`);
+          data = data.concat(pageSymbol.stockHistory);
         }
-      };
+
+        
+        if (orderBy === "orderby_newest") {
+          data.sort((a, b) => b.id - a.id);
+        } else if (orderBy === "orderby_older") {
+          data.sort((a, b) => a.id - b.id);
+        }
+
+        setCompanies(data);
+        console.log("SORTED", data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Fetch error:', error);
+        setLoading(false);
+      }
+    };
 
       fetchStockData();
     }, [orderBy, filterText, symbol]);
@@ -106,18 +116,18 @@ const CompanyStocks = () => {
     }
   };
 
-  const createPurchase = async (user, stock, quantity) => {
+  const handlePurchase = async (stockId, purchaseQuantity) => {
     try {
       const data = await callApi(`/stocks/${userId}`, "POST", true, {
-        userId: user,
-        stockId: stock,
-        quantity: quantity,
+        userId: userId,
+        stockId: stockId,
+        quantity: purchaseQuantity,
       });
-      console.log(data);
+      console.log("Purchase result:", data);
       setPurchase(data);
       console.log(purchase);
     } catch (error) {
-      console.error(error);
+      console.error("Purchase error:", error);
     }
   };
 
@@ -173,12 +183,12 @@ const CompanyStocks = () => {
                 <td>{stock.datetime.split("T")[0]}</td>
                 <td>{stock.datetime.split("T")[1].replace("Z", "")}</td>
                 <td>
-                  <form id="buy-form">
+                  <form className="buy-form">
                     <label>
                       Quantity:   
                       <input type="number" onChange={handleQuantity}/>
                     </label>
-                    <button onClick={() => createPurchase(userId, stock.id, quantity)}>Buy</button>
+                    <button onClick={() => handlePurchase(stock.id, quantity)}>Buy</button>
                   </form>
                 </td>
               </tr>
