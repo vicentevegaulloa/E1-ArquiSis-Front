@@ -12,6 +12,7 @@ const authConfig = {
     // ... other custom components if needed ...
   };
 
+// eslint-disable-next-line
 ReactDOM.render(
   <Authenticator {...authConfig}>
     <BrowserRouter>

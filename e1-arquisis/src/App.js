@@ -20,8 +20,7 @@ import CustomSignIn from "./pages/Landingpage/SignIn";
 
 Amplify.configure(awsExports);
 
-
-
+// eslint-disable-next-line
 const App = ({ signOut, user }) => {
 
   const navigate = useNavigate();
@@ -60,12 +59,19 @@ const App = ({ signOut, user }) => {
                 <div className="user-yes">
                   {console.log(user.walletId)}
                   <div className="side">
+                    {/* eslint-disable-next-line */}
                     <h3>Welcome back {user.email}!</h3>
                     <br></br>
                     <p><b>My profile</b></p>
                     <ul>
-                      <li><button onClick={() => myWallet(user.walletId)}>My wallet</button></li>
-                      <li><button onClick={() => myPurchases(user.username)}>My purchases</button></li>
+                      <li><button onClick={
+                        // eslint-disable-next-line
+                        () => myWallet(user.userId)
+                        }>My wallet</button></li>
+                      <li><button onClick={
+                        // eslint-disable-next-line
+                        () => myPurchases(user.userId)
+                        }>My purchases</button></li>
                     </ul>
                     <br></br>
                     <p><b>Buy available stocks</b></p>
