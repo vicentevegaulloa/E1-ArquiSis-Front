@@ -11,19 +11,17 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set Up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v2
       with:
         node-version: '14' # You can adjust the Node.js version as needed
 
-    - name: Change working dir
-      run: cd ./e1-arquisis
-
     - name: Install Dependencies
       run: npm install
+      working-directory: e1-arquisis # Specify the working directory
 
     - name: Run Linter
       run: npm run lint
-
+      working-directory: e1-arquisis # Specify the working directory
