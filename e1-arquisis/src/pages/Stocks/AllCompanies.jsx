@@ -1,11 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import callApi from '../../fetchData';
 import './Stocks.css';
 
 const API_BASE_URL = 'https://api.valeria-riquel.me';
 const companiesPerPage = 8;
 
 const AllCompanies = () => {
+
+  const [postData, setPostData] = useState(null);
+  const [getData, setGetData] = useState(null);
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await callApi('/users', 'POST', true, {});
+        console.log('DataPost: ', data);
+        setPostData(data);
+      } catch (error) {
+        console.error(error);
+        try {
+          const data = await callApi('/users', 'GET');
+          console.log('DataGet: ', data);
+          setGetData(data);
+        } catch (retryError) {
+          console.error(retryError);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  let userId;
+
+  if (postData === null && getData === null) {
+    userId = null; // Handle the case when both are null
+  } else if (postData === null) {
+    userId = getData.id;
+  } else {
+    userId = postData.id;
+  };
+  
+  console.log(userId);
 
   const navigate = useNavigate();
     
