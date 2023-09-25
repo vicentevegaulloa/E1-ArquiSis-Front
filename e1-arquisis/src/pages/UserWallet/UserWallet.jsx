@@ -71,22 +71,22 @@ const UserWallet = () => {
     }
   };
 
-    const [walletId, setWalletId] = useState(null);
+  const [walletId, setWalletId] = useState(null);
 
-    const fetchWalletData = async () => {
-      try {
-        const data = await callApi(`/wallets/${userId}`, "GET");
-        console.log('Wallet Balance: ', data.balance);
-        console.log("Wallet Id: ", data.id);
-        // Update walletBalance and walletId directly with the new values
-        setWalletBalance(data.balance);
-        setWalletId(data.id);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-   
-    fetchWalletData();
+  const fetchWalletData = async () => {
+    try {
+      const data = await callApi(`/wallets/${userId}`, "GET");
+      console.log('Wallet Balance: ', data.balance);
+      console.log("Wallet Id: ", data.id);
+      // Update walletBalance and walletId directly with the new values
+      setWalletBalance(data.balance);
+      setWalletId(data.id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  fetchWalletData();
 
   if (walletBalance === null) {
     return <p>Loading...</p>;

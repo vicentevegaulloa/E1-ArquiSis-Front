@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import callApi from '../../fetchData';
 import './Stocks.css'
-
-const API_BASE_URL = 'https://api.valeria-riquel.me';
 
 const stocksPerPage = 8;
 
@@ -14,14 +13,49 @@ const CompanyStocks = () => {
   const filterQueryParam = queryParams.get('filter');
 
   const navigate = useNavigate();
+
+  const [postData, setPostData] = useState(null);
+  const [getData, setGetData] = useState(null);
+ 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await callApi('/users', 'POST', true, {});
+        console.log('DataPost: ', data);
+        setPostData(data);
+      } catch (error) {
+        console.error("BUTWHY", error);
+        try {
+          const data = await callApi('/users', 'GET');
+          console.log('DataGet: ', data);
+          setGetData(data);
+        } catch (retryError) {
+          console.error(retryError);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  let userId;
+
+  if (postData === null && getData === null) {
+    userId = null; // Handle the case when both are null
+  } else if (postData === null) {
+    userId = getData.id;
+  } else {
+    userId = postData.id;
+  };
     
+  console.log("UserId: ", userId);
+
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [currentPageS, setCurrentPageS] = useState(1);
   const [orderBy, setOrderBy] = useState("orderby_newest");
   const [filterText] = useState(filterQueryParam || ''); 
-
   
   const handleChangeOrder = (event) => {
     const selectedValue = event.target.value;
@@ -29,31 +63,36 @@ const CompanyStocks = () => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/stocks/${symbol}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const sortedStocks = data.filter((company) => company.symbol === symbol);
-        
-        if (orderBy === "orderby_newest") {
-          sortedStocks.sort((a, b) => b.id - a.id);
-        } else if (orderBy === "orderby_older") {
-          sortedStocks.sort((a, b) => a.id - b.id);
+    const fetchStockData = async () => {
+      /* const data = await callApi("/stocks/PG?page=3&size=5"); */
+      try {
+        const dataFull = await callApi(`/stocks/${symbol}`);
+        const totalStockPages = dataFull.totalPages;
+
+        let data = [];
+        for (let page = 1; page <= totalStockPages; page++) {
+          const pageSymbol = await callApi(`/stocks/${symbol}?page=${page}`);
+          data = data.concat(pageSymbol.stockHistory);
         }
 
-        setCompanies(sortedStocks);
-        console.log(sortedStocks);
+        
+        if (orderBy === "orderby_newest") {
+          data.sort((a, b) => b.id - a.id);
+        } else if (orderBy === "orderby_older") {
+          data.sort((a, b) => a.id - b.id);
+        }
+
+        setCompanies(data);
+        console.log("SORTED", data);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Fetch error:', error);
         setLoading(false);
-      });
-  }, [orderBy, filterText, symbol]);
+      }
+    };
+
+      fetchStockData();
+    }, [orderBy, filterText, symbol]);
   
   const filteredCompanies = companies.filter(company => company.symbol.includes(filterText));
   let totalPagesS = Math.ceil(filteredCompanies.length / stocksPerPage);
@@ -67,8 +106,29 @@ const CompanyStocks = () => {
   const endIndexS = startIndexS + stocksPerPage;
   const currentStocks = filteredCompanies.slice(startIndexS, endIndexS);
 
-  const handleBuy = (id) => {
-    navigate(`/stocks/${id}`);
+  const [quantity, setQuantity] = useState(0);
+  const [purchase, setPurchase] = useState(null);
+  
+  const handleQuantity = (event) => {
+    const value = parseInt(event.target.value, 10);
+    if (!isNaN(value)) {
+      setQuantity(value);
+    }
+  };
+
+  const handlePurchase = async (stockId, purchaseQuantity) => {
+    try {
+      const data = await callApi(`/stocks/${userId}`, "POST", true, {
+        userId: userId,
+        stockId: stockId,
+        quantity: purchaseQuantity,
+      });
+      console.log("Purchase result:", data);
+      setPurchase(data);
+      console.log(purchase);
+    } catch (error) {
+      console.error("Purchase error:", error);
+    }
   };
 
   const goBack = () => {
@@ -109,23 +169,27 @@ const CompanyStocks = () => {
               <th>Short Name</th>
               <th>Symbol</th>
               <th>Price</th>
-              <th>Currency</th>
               <th>Date</th>
               <th>Time in UTC</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {currentStocks.map((company) => (
-              <tr key={company.id} className="company-item">
-                <td>{company.shortName}</td>
-                <td>{company.symbol}</td>
-                <td>{company.price}</td>
-                <td>{company.currency}</td>
-                <td>{company.datetime.split("T")[0]}</td>
-                <td>{company.datetime.split("T")[1].replace("Z", "")}</td>
-                <td style={{ textAlign: "center" }}>
-                  <button onClick={() => handleBuy(company.id)}>Buy</button>
+            {currentStocks.map((stock) => (
+              <tr key={stock.id} className="company-item">
+                <td>{stock.shortName}</td>
+                <td>{stock.symbol}</td>
+                <td>{stock.price} {stock.currency}</td>
+                <td>{stock.datetime.split("T")[0]}</td>
+                <td>{stock.datetime.split("T")[1].replace("Z", "")}</td>
+                <td>
+                  <form className="buy-form">
+                    <label>
+                      Quantity:   
+                      <input type="number" onChange={handleQuantity}/>
+                    </label>
+                    <button onClick={() => handlePurchase(stock.id, quantity)}>Buy</button>
+                  </form>
                 </td>
               </tr>
             ))}

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import callApi from '../../fetchData';
 import './Stocks.css';
 
-const API_BASE_URL = 'https://api.valeria-riquel.me';
 const companiesPerPage = 8;
 
 const AllCompanies = () => {
@@ -24,7 +23,7 @@ const AllCompanies = () => {
           console.log('DataGet: ', data);
           setGetData(data);
         } catch (retryError) {
-          console.error(retryError);
+          console.error("RetryError:", retryError);
         }
       }
     };
@@ -58,32 +57,32 @@ const AllCompanies = () => {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/stocks`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchCompanies = async () => {
+      try {
+        const data = await callApi("/stocks");
         const sortedCompanies = [...data];
-        
+
         if (orderBy === "orderby_asc") {
           sortedCompanies.sort((a, b) => a.shortName.localeCompare(b.shortName));
         } else if (orderBy === "orderby_desc") {
           sortedCompanies.sort((a, b) => b.shortName.localeCompare(a.shortName));
         }
-
         setCompanies(sortedCompanies);
-        console.log(sortedCompanies);
+        console.log("Sorted: ", sortedCompanies);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error al obtener datos:', error);
         setLoading(false);
-      });
-  }, [orderBy]);
+      }
+    };
+    fetchCompanies();
+    }, [orderBy]);
+
 
   const totalPagesC = companies.length === 0 ? 1 : Math.ceil(companies.length / companiesPerPage);
   const handlePageChangeC = (newPage) => {
     setCurrentPageC(newPage);
-  };
-  
+  };  
   
   const startIndexC = (currentPageC - 1) * companiesPerPage;
   const endIndexC = startIndexC + companiesPerPage;
@@ -133,7 +132,7 @@ const AllCompanies = () => {
               <tr key={company.id} className="company-item">
                 <td>{company.shortName}</td>
                 <td style={{ textAlign: "center" }}>
-                  <button onClick={() => handleFilterSubmit(company.symbol)}>View stocks records</button>
+                  <button onClick={() => handleFilterSubmit(company.symbol)}>View stocks</button>
                 </td>
               </tr>
             ))}
