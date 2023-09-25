@@ -85,7 +85,7 @@ const App = ({ signOut, user }) => {
               ) : (
                 <div className="user-no">
                   <Routes>
-                    <Route path="/" element={<LandingPage/>}></Route>
+                    <Route path="/welcome" element={<LandingPage/>}></Route>
                     <Route path="/explore" element={<CompanyList/>}></Route>
                     <Route path="/signin" element={<CustomSignIn/>}></Route>
                   </Routes>

@@ -28,7 +28,7 @@
   font-size: 16px;
 }
 
-.content-text .btn {
+.content-text button {
   display: inline-block;
   padding: 10px 20px;
   background-color: #1da1f2;
@@ -37,10 +37,12 @@
   margin-top: 10px;
   transition: background-color 0.3s ease;
   border-radius: 20px;
+  border: none;
 }
 
-.content-text .btn:hover {
+.content-text button:hover { 
   background-color: #fff;
   color: #1da1f2;
+  border: none;
 }
   
