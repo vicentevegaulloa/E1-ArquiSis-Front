@@ -18,6 +18,9 @@ jobs:
       with:
         node-version: '14' # You can adjust the Node.js version as needed
 
+    - name: Change working dir
+      run: cd ./e1-arquisis
+
     - name: Install Dependencies
       run: npm install
 
