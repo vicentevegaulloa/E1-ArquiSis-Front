@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
-
 import FetchDataComponent from "./components/FetchDataComponent";
 
 import CompanyList from "./pages/CompanyList/CompanyList";
@@ -21,12 +20,15 @@ import CustomSignIn from "./pages/Landingpage/SignIn";
 
 Amplify.configure(awsExports);
 
+
+
 const App = ({ signOut, user }) => {
 
   const navigate = useNavigate();
 
-  const myWallet = (userId) => {
-    navigate(`/wallets/${userId}`);
+  
+  const myWallet = () => {
+    navigate(`/wallet`);
   };
 
   const myPurchases = (userId) => {
@@ -56,13 +58,14 @@ const App = ({ signOut, user }) => {
           <div className="main">
             {user ? (
                 <div className="user-yes">
+                  {console.log(user.walletId)}
                   <div className="side">
                     <h3>Welcome back {user.email}!</h3>
                     <br></br>
                     <p><b>My profile</b></p>
                     <ul>
-                      <li><button onClick={() => myWallet(user.userId)}>My wallet</button></li>
-                      <li><button onClick={() => myPurchases(user.userId)}>My purchases</button></li>
+                      <li><button onClick={() => myWallet(user.walletId)}>My wallet</button></li>
+                      <li><button onClick={() => myPurchases(user.username)}>My purchases</button></li>
                     </ul>
                     <br></br>
                     <p><b>Buy available stocks</b></p>
@@ -73,11 +76,11 @@ const App = ({ signOut, user }) => {
 
                   <div className="page">
                     <Routes>
-                      <Route path="/" element={<HomePage/>} />
+                      <Route path="/" element={<HomePage />} />
                       <Route path="/data" element={<FetchDataComponent/>}/>
                       <Route path="/company/:symbol" element={<CompanyStocks/>} />
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
-                      <Route path="/wallets/:userId" element={<UserWallet user={user} signOut={signOut}/>} />
+                      <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
                       <Route path="/purchases/:userId" element={<PurchasesList />} />
                     </Routes>
                   </div>
@@ -93,7 +96,6 @@ const App = ({ signOut, user }) => {
                 
               )}
             
-            {console.log(user)}
             
 
           </div>
