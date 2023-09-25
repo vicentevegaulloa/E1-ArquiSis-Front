@@ -32,7 +32,7 @@ const App = ({ signOut, user }) => {
   };
 
   const myPurchases = (userId) => {
-    navigate(`/purchases/${userId}`);
+    navigate(`/purchases`);
   };
 
   const seeStocks = () => {
@@ -81,7 +81,7 @@ const App = ({ signOut, user }) => {
                       <Route path="/company/:symbol" element={<CompanyStocks/>} />
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
                       <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
-                      <Route path="/purchases/:userId" element={<PurchasesList />} />
+                      <Route path="/purchases" element={<PurchasesList />} />
                     </Routes>
                   </div>
                 </div>
