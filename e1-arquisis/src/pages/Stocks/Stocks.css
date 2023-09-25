@@ -47,10 +47,14 @@ caption {
 .table th {
   background-color: #f6f8fa;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   color: #586069;
 }
   
+.table td {
+  font-size: 14px;
+}
+
 .table tbody tr:nth-child(even) {
   background-color: #f6f8fa;
 }
@@ -76,4 +80,9 @@ caption {
   .table td {
     padding: 10px;
   }
+}
+
+input {
+  width: 50px;
+  margin: 0 10px;
 }

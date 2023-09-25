@@ -1,30 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import callApi from '../../fetchData';
 import './PurchasesList.css';
-import { useParams } from 'react-router-dom';
-
-const API_BASE_URL = 'https://api.valeria-riquel.me/purchases';
 
 const PurchasesList = () => {
-  const { userId } = useParams();
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [postData, setPostData] = useState(null);
+  const [getData, setGetData] = useState(null);
+ 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/${userId}`);
-        const validPurchases = response.data.filter(purchase => purchase.valid === true);
+        const data = await callApi('/users', 'POST', true, {});
+        console.log('DataPost: ', data);
+        setPostData(data);
+      } catch (error) {
+        console.error(error);
+        try {
+          const data = await callApi('/users', 'GET');
+          console.log('DataGet: ', data);
+          setGetData(data);
+        } catch (retryError) {
+          console.error(retryError);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  let userId;
+
+  if (postData === null && getData === null) {
+    userId = null; // Handle the case when both are null
+  } else if (postData === null) {
+    userId = getData.id;
+  } else {
+    userId = postData.id;
+  };
+
+
+    const fetchPurchases = async () => {
+      try {
+        const data = await callApi(`/purchases/${userId}`, "GET");
+        const validPurchases = data.filter(purchase => purchase.valid === true);
         setPurchases(validPurchases);
+        console.log(validPurchases);
         setLoading(false);
       } catch (error) {
         console.error('Error al obtener datos de compras:', error);
         setLoading(false);
-      }
-    };
+      }};
 
-    fetchData();
-  }, [userId]);
+    fetchPurchases();
 
   return (
     <div>
@@ -34,7 +63,7 @@ const PurchasesList = () => {
           <p>Loading...</p>
         ) : (
           purchases.length === 0 ? (
-            <p>No Purchases</p>
+            <p>You don't have any purchases yet</p>
           ) : (
           purchases.length > 0 && (
             <table className="table-fill">

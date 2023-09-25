@@ -1,13 +1,46 @@
 import React, { useState, useEffect } from 'react';
+import callApi from '../../fetchData';
 import './UserWallet.css';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import '@aws-amplify/ui-react/styles.css';
 
-const API_BASE_URL = 'https://api.valeria-riquel.me/wallets';
 
-const UserWallet = ({ user, signOut }) => {
-  const { userId } = useParams();
+const UserWallet = () => {
+
+  const [postData, setPostData] = useState(null);
+  const [getData, setGetData] = useState(null);
+ 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await callApi('/users', 'POST', true, {});
+        console.log('DataPost: ', data);
+        setPostData(data);
+      } catch (error) {
+        console.error(error);
+        try {
+          const data = await callApi('/users', 'GET');
+          console.log('DataGet: ', data);
+          setGetData(data);
+        } catch (retryError) {
+          console.error(retryError);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  let userId;
+
+  if (postData === null && getData === null) {
+    userId = null; // Handle the case when both are null
+  } else if (postData === null) {
+    userId = getData.id;
+  } else {
+    userId = postData.id;
+  };
+  
+  console.log("User id: ", userId);
+
   const [walletBalance, setWalletBalance] = useState(null);
   const [amountToAdd, setAmountToAdd] = useState(0);
 
@@ -18,16 +51,15 @@ const UserWallet = ({ user, signOut }) => {
     }
   };
 
+
   const addMoneyToWallet = async () => {
     if (amountToAdd > 0) {
       try {
-        const response = await axios.put(`${API_BASE_URL}/${userId}`, {
-          balance: walletBalance + amountToAdd,
+        const data = await callApi(`/wallets/${walletId}`, 'PUT', true, {
+          balance: walletBalance + amountToAdd, // Update the balance with the added amount
         });
-
-        console.log('User ID:', userId);
-
-        if (response.status === 200) {
+        if (data.status === 200) {
+          // Update walletBalance directly with the new value
           setWalletBalance(walletBalance + amountToAdd);
           setAmountToAdd(0);
         } else {
@@ -39,68 +71,50 @@ const UserWallet = ({ user, signOut }) => {
     }
   };
 
+  const [walletId, setWalletId] = useState(null);
+
   const fetchWalletData = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/${userId}`);
-      if (response.status === 200) {
-        setWalletBalance(response.data.balance);
-      } else {
-        console.error('Error fetching wallet information');
-      }
+      const data = await callApi(`/wallets/${userId}`, "GET");
+      console.log('Wallet Balance: ', data.balance);
+      console.log("Wallet Id: ", data.id);
+      // Update walletBalance and walletId directly with the new values
+      setWalletBalance(data.balance);
+      setWalletId(data.id);
     } catch (error) {
-      console.error('Request error:', error);
+      console.error(error);
     }
   };
-
-  useEffect(() => {
-    console.log('User ID (Fetch):', userId);
-    fetchWalletData();
-  }, [fetchWalletData, userId]);
+  
+  fetchWalletData();
 
   if (walletBalance === null) {
     return <p>Loading...</p>;
   }
 
-  return (
-    <div className="user-wallet-container">
-      <header>
-        <nav className="navbar">
-          <div className="logo">
-            <a href="/">Buy Stonks</a>
-          </div>
-          <div className="nav-links">
-            <button onClick={() => signOut()} className="btn">
-              Sign Out
-            </button>
-          </div>
-        </nav>
-      </header>
+  const handleRefresh = () => {
+    window.location.reload(); // Reload the current page
+  };
 
+  return (
+  
       <div className="card-container">
-        <h2 className="title">Edit your balance</h2>
+        <h2>Your wallet</h2>
         <div className="user-info">
           <h3>Current Balance</h3>
-          <p>${walletBalance}</p>
+          <p>You have <b>${walletBalance}</b> in your wallet</p>
+          <h3>Add balance</h3>
+          <p>To add money, type the amount. Then click Add Money and Refresh data.</p>
           <form>
             <label>
-              Amount to Add:
-              <input
-                type="number"
-                value={amountToAdd}
-                onChange={handleAmountChange}
-              />
+              Amount to Add:   
+              <input type="number" onChange={handleAmountChange}/>
             </label>
-            <button
-              className="primary"
-              type="button"
-              onClick={addMoneyToWallet}
-            >
-              Add Money
-            </button>
+            <button className="primary" type="button" onClick={addMoneyToWallet}>Add Money</button>
+            <button className="primary" type="button" onClick={handleRefresh}>Refresh data</button>
           </form>
         </div>
       </div>
-    </div>
   );
 };
 

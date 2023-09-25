@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
-
 import FetchDataComponent from "./components/FetchDataComponent";
 
 import CompanyList from "./pages/CompanyList/CompanyList";
@@ -26,12 +25,13 @@ const App = ({ signOut, user }) => {
 
   const navigate = useNavigate();
 
-  const myWallet = (userId) => {
-    navigate(`/wallets/${userId}`);
+  
+  const myWallet = () => {
+    navigate(`/wallet`);
   };
 
   const myPurchases = (userId) => {
-    navigate(`/purchases/${userId}`);
+    navigate(`/purchases`);
   };
 
   const seeStocks = () => {
@@ -57,6 +57,7 @@ const App = ({ signOut, user }) => {
           <div className="main">
             {user ? (
                 <div className="user-yes">
+                  {console.log(user.walletId)}
                   <div className="side">
                     {/* eslint-disable-next-line */}
                     <h3>Welcome back {user.email}!</h3>
@@ -81,19 +82,19 @@ const App = ({ signOut, user }) => {
 
                   <div className="page">
                     <Routes>
-                      <Route path="/" element={<HomePage/>} />
+                      <Route path="/" element={<HomePage />} />
                       <Route path="/data" element={<FetchDataComponent/>}/>
                       <Route path="/company/:symbol" element={<CompanyStocks/>} />
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
-                      <Route path="/wallets/:userId" element={<UserWallet user={user} signOut={signOut}/>} />
-                      <Route path="/purchases/:userId" element={<PurchasesList />} />
+                      <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
+                      <Route path="/purchases" element={<PurchasesList />} />
                     </Routes>
                   </div>
                 </div>
               ) : (
                 <div className="user-no">
                   <Routes>
-                    <Route path="/" element={<LandingPage/>}></Route>
+                    <Route path="/welcome" element={<LandingPage/>}></Route>
                     <Route path="/explore" element={<CompanyList/>}></Route>
                     <Route path="/signin" element={<CustomSignIn/>}></Route>
                   </Routes>
@@ -101,7 +102,6 @@ const App = ({ signOut, user }) => {
                 
               )}
             
-            {console.log(user)}
             
 
           </div>
