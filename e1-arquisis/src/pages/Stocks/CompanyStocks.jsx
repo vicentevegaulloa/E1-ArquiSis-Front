@@ -24,7 +24,7 @@ const CompanyStocks = () => {
         console.log('DataPost: ', data);
         setPostData(data);
       } catch (error) {
-        console.error("BUTWHY", error);
+        console.error("IGNORE", error);
         try {
           const data = await callApi('/users', 'GET');
           console.log('DataGet: ', data);
@@ -114,28 +114,31 @@ const CompanyStocks = () => {
     }
   };
 
-  const [purchaseQuantity, setPurchaseQuantity] = useState(0);
 
-  const handlePurchase = async (stockId, purchaseHowMany, event) => {
-
-    event.preventDefault();
-    if (purchaseQuantity > 0) {
+  const handlePurchase = async (stockId, purchaseQuantity) => {
+    
+    if (quantity > 0) {
       try {
-        const data = await callApi(`/stocks/${userId}`, "POST", true, {
+        const data = await callApi(`/purchases/${userId}`, "POST", true, {
           userId: userId,
           stockId: stockId,
-          quantity: purchaseHowMany,
+          quantity: purchaseQuantity,
         });
-        console.log("Purchase result:", data);
-        setPurchaseQuantity(purchaseHowMany);
-        setPurchase(data);          
-        console.log(purchase);
+        if (data.status === 200) {
+          console.log("Purchase result:", data);
+          setQuantity(purchaseQuantity);
+          setPurchase(data);          
+          console.log(purchase);
+        }else {
+          console.error('Error updating purchase');
+        }
       } catch (error) {
         console.error("Purchase error:", error);
       }
     }
   };
-
+  
+  console.log("Purchase variable: ", purchase);
   const goBack = () => {
     navigate(`/stocks`);
   };
@@ -189,13 +192,11 @@ const CompanyStocks = () => {
                 <td>{stock.datetime.split("T")[0]}</td>
                 <td>{stock.datetime.split("T")[1].replace("Z", "")}</td>
                 <td>
-                  <form className="buy-form">
                     <label>
                       Quantity:   
                       <input type="number" onChange={handleQuantity}/>
                     </label>
-                    <button onClick={(event) => handlePurchase(stock.id, quantity, event)}>Buy</button>
-                  </form>
+                    <button onClick={() => handlePurchase(stock.id, quantity)}>Buy</button>
                 </td>
               </tr>
             ))}
