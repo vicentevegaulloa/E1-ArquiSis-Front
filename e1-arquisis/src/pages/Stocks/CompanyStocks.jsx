@@ -47,8 +47,6 @@ const CompanyStocks = () => {
   } else {
     userId = postData.id;
   };
-    
-  console.log("UserId: ", userId);
 
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,18 +114,25 @@ const CompanyStocks = () => {
     }
   };
 
-  const handlePurchase = async (stockId, purchaseQuantity) => {
-    try {
-      const data = await callApi(`/stocks/${userId}`, "POST", true, {
-        userId: userId,
-        stockId: stockId,
-        quantity: purchaseQuantity,
-      });
-      console.log("Purchase result:", data);
-      setPurchase(data);
-      console.log(purchase);
-    } catch (error) {
-      console.error("Purchase error:", error);
+  const [purchaseQuantity, setPurchaseQuantity] = useState(0);
+
+  const handlePurchase = async (stockId, purchaseHowMany, event) => {
+
+    event.preventDefault();
+    if (purchaseQuantity > 0) {
+      try {
+        const data = await callApi(`/stocks/${userId}`, "POST", true, {
+          userId: userId,
+          stockId: stockId,
+          quantity: purchaseHowMany,
+        });
+        console.log("Purchase result:", data);
+        setPurchaseQuantity(purchaseHowMany);
+        setPurchase(data);          
+        console.log(purchase);
+      } catch (error) {
+        console.error("Purchase error:", error);
+      }
     }
   };
 
@@ -138,6 +143,7 @@ const CompanyStocks = () => {
   return (
     <div className="content">
       <h2>Available stocks details</h2>
+      <p style={{fontSize: "11px"}}><i>Please be patient, we manage many, many stocks.</i></p>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -188,7 +194,7 @@ const CompanyStocks = () => {
                       Quantity:   
                       <input type="number" onChange={handleQuantity}/>
                     </label>
-                    <button onClick={() => handlePurchase(stock.id, quantity)}>Buy</button>
+                    <button onClick={(event) => handlePurchase(stock.id, quantity, event)}>Buy</button>
                   </form>
                 </td>
               </tr>
