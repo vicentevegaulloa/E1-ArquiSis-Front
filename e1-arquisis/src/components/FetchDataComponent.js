@@ -1,4 +1,5 @@
 import callApi from "../fetchData";
+import React from "react";
 
 const FetchDataComponent = () => {
   return (
