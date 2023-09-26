@@ -12,12 +12,13 @@ git clone https://github.com/vicentevegaulloa/E1-ArquiSis-Front.git
 cd E1-ArquiSis-Front
 ```
 
-#### Paso 2: Configuración Variables de Entorno 
-Crea un archivo **.env** en la raíz del proyecto y añade las siguientes variables con sus respectivos valores:
-
+#### Paso 2: Configuración de Amplify
 ```bash
-
+npx amplify init
+npx amplify pull
 ```
+**Importante:** En estos pasos se solicitará credenciales IAM. Estas deben ser solicitadas al dueño del repositorio.
+
 #### Paso 3: Instalar las dependencias
 En la raíz del proyecto, ejecuta el siguiente comando para correr las dependencias
 
@@ -27,7 +28,9 @@ npm install
 ```
 
 #### Paso 4: Correr la aplicación 
-
+```bash
+npm start
+```
 
 
 
