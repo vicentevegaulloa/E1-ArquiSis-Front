@@ -6,9 +6,9 @@ import FetchDataComponent from "./components/FetchDataComponent";
 
 import CompanyList from "./pages/CompanyList/CompanyList";
 import AllCompanies from './pages/Stocks/AllCompanies';
-import CompanyStocks from './pages/Stocks/CompanyStocks';
+import CompanyStocks2 from './pages/Stocks/CompanyStocks2';
 import UserWallet from './pages/UserWallet/UserWallet';
-import PurchasesList from './pages/PurchasesList/PurchasesList';
+import PurchasesList2 from './pages/PurchasesList/PurchasesList2';
 import HomePage from './pages/Homepage/Homepage';
 
 import awsExports from "./aws-exports";
@@ -30,7 +30,7 @@ const App = ({ signOut, user }) => {
     navigate(`/wallet`);
   };
 
-  const myPurchases = (userId) => {
+  const myPurchases = () => {
     navigate(`/purchases`);
   };
 
@@ -57,7 +57,10 @@ const App = ({ signOut, user }) => {
           <div className="main">
             {user ? (
                 <div className="user-yes">
-                  {console.log(user.walletId)}
+                  {
+                    // eslint-disable-next-line
+                  console.log(user.walletId)
+                  }
                   <div className="side">
                     {/* eslint-disable-next-line */}
                     <h3>Welcome back {user.email}!</h3>
@@ -84,10 +87,11 @@ const App = ({ signOut, user }) => {
                     <Routes>
                       <Route path="/" element={<HomePage />} />
                       <Route path="/data" element={<FetchDataComponent/>}/>
-                      <Route path="/company/:symbol" element={<CompanyStocks/>} />
+                      {/* <Route path="/company/:symbol" element={<CompanyStocks/>} /> */}
+                      <Route path="/company/:symbol" element={<CompanyStocks2/>} />
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
                       <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
-                      <Route path="/purchases" element={<PurchasesList />} />
+                      <Route path="/purchases" element={<PurchasesList2 />} />
                     </Routes>
                   </div>
                 </div>

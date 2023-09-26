@@ -46,7 +46,7 @@ const CompanyStocks = () => {
     userId = getData.id;
   } else {
     userId = postData.id;
-  };
+  }
     
   console.log("UserId: ", userId);
 
@@ -118,7 +118,8 @@ const CompanyStocks = () => {
 
   const handlePurchase = async (stockId, purchaseQuantity) => {
     try {
-      const data = await callApi(`/stocks/${userId}`, "POST", true, {
+      console.log("PURCHASING")
+      const data = await callApi(`purchases/${userId}`, "POST", true, {
         userId: userId,
         stockId: stockId,
         quantity: purchaseQuantity,
