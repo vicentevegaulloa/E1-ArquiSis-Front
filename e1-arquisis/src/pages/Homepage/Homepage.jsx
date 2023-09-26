@@ -38,7 +38,7 @@ const HomePage = () => {
     userId = getData.id;
   } else {
     userId = postData.id;
-  };
+  }
   
   console.log("UserId definido: ", userId);
 
@@ -52,6 +52,8 @@ const HomePage = () => {
       console.log("Wallet Id: ", data.id);
       setWalletBalance("New WalletBalance: ", data.balance);
       setWalletId("New WalletId: ", data.id);
+      console.log("Wallet Balance: ", walletBalance);
+      console.log("Wallet Id: ", walletId);
     } catch (error) {
       console.error(error);
     }
