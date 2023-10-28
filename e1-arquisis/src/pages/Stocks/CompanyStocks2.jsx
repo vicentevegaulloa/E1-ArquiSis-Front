@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import callApi from "../../fetchData"
 
 const CompanyStocks2 = () => {
@@ -79,6 +79,25 @@ const CompanyStocks2 = () => {
     }
   };
 
+  
+  const navigate = useNavigate(); 
+
+  /* FALTA ENDPOINTTT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  */
+  const handlePrediction = async () => {
+    try {
+      console.log('Entered button'); 
+      //let Predictor = await callApi(`/health`);
+      let Predictor = true;
+      if (Predictor) {
+        navigate(`/createpred`);  
+      } else {
+        navigate(`/notworking`)
+      }      
+    } catch (error) {
+      console.error('Failed connect to worker:', error); 
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -105,6 +124,7 @@ const CompanyStocks2 = () => {
                 />
             </label>
             <button onClick={handleButtonClick}>Buy the latest stock</button>
+            <button onClick={handlePrediction}>Create prediction</button>
         </div>
         <br/>
         {message && <p className="message">{message}</p>}
@@ -113,6 +133,19 @@ const CompanyStocks2 = () => {
 )}
 
           <table className="table">
+            <caption>
+              <div className='tablecaptionspace'>
+                <div className="pagination">
+                  <button onClick={() => handlePageChange('prev')}>
+                      ❮
+                    </button>
+                    <span>{currentPage} of {totalPages} pages</span>
+                    <button onClick={() => handlePageChange('next')}>
+                      ❯
+                    </button>
+                </div>
+              </div>
+            </caption>
           <thead>
             <tr>
               <th>Short Name</th>
@@ -134,14 +167,6 @@ const CompanyStocks2 = () => {
             ))}
           </tbody>
         </table>
-
-          <div>
-            <button onClick={() => handlePageChange('prev')}>Previous</button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button onClick={() => handlePageChange('next')}>Next</button>
-          </div>
 
         </div>
       )}

@@ -17,6 +17,11 @@ import '@aws-amplify/ui-react/styles.css';
 import './App.css';
 import LandingPage from "./pages/Landingpage/Landingpage";
 import CustomSignIn from "./pages/Landingpage/SignIn";
+import CreatePred from "./pages/Predictions/CreatePrediction";
+import WorkerNotConnected from "./pages/Predictions/WorkerNotConnected";
+import ShowPrediction from "./pages/Predictions/ShowPrediction";
+import MyPredictionsStocks from "./pages/Predictions/MyPredictionsStocks"
+import MyPredictionsCompanies from "./pages/Predictions/MyPredictionsCompanies";
 
 Amplify.configure(awsExports);
 
@@ -32,6 +37,10 @@ const App = ({ signOut, user }) => {
 
   const myPurchases = () => {
     navigate(`/purchases`);
+  };
+
+  const myPredictions = () => {
+    navigate(`/predictions`);
   };
 
   const seeStocks = () => {
@@ -75,6 +84,10 @@ const App = ({ signOut, user }) => {
                         // eslint-disable-next-line
                         () => myPurchases(user.userId)
                         }>My purchases</button></li>
+                      <li><button onClick={
+                        // eslint-disable-next-line
+                        () => myPredictions(user.userId)
+                        }>My predictions</button></li>
                     </ul>
                     <br></br>
                     <p><b>Buy available stocks</b></p>
@@ -92,6 +105,12 @@ const App = ({ signOut, user }) => {
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
                       <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
                       <Route path="/purchases" element={<PurchasesList2 />} />
+                      <Route path="/createpred" element={<CreatePred/>} />
+                      <Route path="/showpred" element={<ShowPrediction/>} /> 
+                      <Route path="/predictions" element={<MyPredictionsCompanies/>} />
+                      <Route path="/predictions/company/:symbol" element={<MyPredictionsStocks/>} />
+                      <Route path="/notworking" element={<WorkerNotConnected/>} />
+
                     </Routes>
                   </div>
                 </div>
