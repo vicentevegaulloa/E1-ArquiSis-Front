@@ -76,15 +76,6 @@ const MyPredictionsStocks = () => {
     }
   };
 
-  const getNetProfit = () => {
-    //if (latestStock.price && price) {
-      //return (stockQuantity * (latestStock.price - price)).toFixed(2); 
-    //} else {
-      return 0;
-    //}
-    
-  };
-
   const chartData = {
     labels: data.map(stock => stock.datetime.split("T")[0]), // Assuming each stock has a datetime field
     datasets: [
@@ -126,7 +117,7 @@ const MyPredictionsStocks = () => {
                           Simulation Quantity:
                           <input 
                             type="number" 
-                            min="1" 
+                            min="0" 
                             value={stockQuantity} 
                             onChange={e => setStockQuantity(Number(e.target.value))} 
                           />
@@ -165,7 +156,12 @@ const MyPredictionsStocks = () => {
                           <td>{stock.price} {stock.currency}</td>
                           <td>{stock.datetime.split("T")[0]}</td>
                           <td>{stock.datetime.split("T")[1].replace("Z", "")}</td>
-                          <td>{getNetProfit(stock.price)} {stock.currency}</td>
+                          <td>
+                          {(latestStock !== null && Object.keys(latestStock).length > 0)
+                              ? (stockQuantity * (latestStock.price - stock.price)).toFixed(2)
+                              : 0
+                            } {stock.currency}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
