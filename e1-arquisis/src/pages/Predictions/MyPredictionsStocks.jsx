@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './Predictions.css';
 import callApi from '../../fetchData';
-import Chart from 'chart.js/auto';
-import { Line } from "react-chartjs-2";
+import Chart from "chart.js/auto";
+import { CategoryScale } from "chart.js";
+import LineChart from './Chart';
 
-
+Chart.register(CategoryScale);
 
 const MyPredictionsStocks = () => {
 
@@ -84,104 +85,65 @@ const MyPredictionsStocks = () => {
     
   };
 
-  const chartRef = useRef(null);
-
-  // Create a function to generate the chart
-  const generateChart = () => {
-    if (data && data.length > 0) {
-      
-      const ctx = chartRef.current.getContext('2d');
-
-      const dates = data.map(stock => stock.datetime);
-      const prices = data.map(stock => (stock && stock.price !== null ? stock.price : 0));
-
-
-        console.log(data)
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: dates, // Use labels instead of dates
-            datasets: [
-              {
-                label: 'Stock Prices',
-                data: prices,
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-              },
-            ],
-          },
-        });
-      
-
-      
-    }
+  const chartData = {
+    labels: data.map(stock => stock.datetime.split("T")[0]), // Assuming each stock has a datetime field
+    datasets: [
+      {
+        label: 'Stock Price',
+        data: data.map(stock => stock.price), // Assuming each stock has a price field
+        borderColor: 'rgba(75, 192, 192, 1)', // Line color
+        fill: false, // Don't fill the area under the line
+      },
+    ],
   };
-
-  // Call the generateChart function when the component mounts
-  useEffect(() => {
-    generateChart();
-  }, []);
-  
 
   return (
   
       <div className="card-container">
         <h2>My Predictions</h2>
-        <div className="user-info">
 
-          <div className='pred-graph-details'>
-            <div className='pred-graph'>
-    
-              <canvas ref={chartRef} width="400" height="200"></canvas>
-    
-            </div>
-          </div>
+          <div className='user-info'>   
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <div>
+                <div className='up'>
+                  <div className='pred-chart'>
+                    <h3>Predictions history</h3>
+                    <LineChart chartData={chartData} />
+                  </div>
+                  {latestStock && latestStock.price && (
+                    <div className="stock-card">
+                      <h3>Latest stock</h3>
+                      <p><b>Short Name:</b> {latestStock.shortName}</p>
+                      <p><strong>Symbol:</strong> {latestStock.symbol}</p>
+                      <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
+                      <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
+                      <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
 
-
-          <div className='pred-table'>
-            
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <div>
-                {latestStock && latestStock.price && (
-                  <div className="stock-card">
-                    <p><strong>Short Name:</strong> {latestStock.shortName}</p>
-                    <p><strong>Symbol:</strong> {latestStock.symbol}</p>
-                    <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
-                    <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
-                    <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
-                    
-                    
-                    <div className="purchase-controls">
+                      <div className="simulation-controls">
                         <label>
-                            Simulation Quantity:
-                            <input 
-                                type="number" 
-                                min="1" 
-                                value={stockQuantity} 
-                                onChange={e => setStockQuantity(Number(e.target.value))} 
-                            />
+                          Simulation Quantity:
+                          <input 
+                            type="number" 
+                            min="1" 
+                            value={stockQuantity} 
+                            onChange={e => setStockQuantity(Number(e.target.value))} 
+                          />
                         </label>
                         <button onClick={handlePrediction}>Create prediction</button>
+                      </div>
                     </div>
-                    <br/>
-
+                  )}
                 </div>
-            )}
-                  
-                    <table className="table">
+                <div className='down'>    
+                  <table className="table">
                     <caption>
                       <div className='tablecaptionspace'>
                         <div className="pagination">
-                          <button onClick={() => handlePageChange('prev')}>
-                              ❮
-                            </button>
-                            <span>{currentPage} of {totalPages} pages</span>
-                            <button onClick={() => handlePageChange('next')}>
-                              ❯
-                            </button>
+                          <button onClick={() => handlePageChange('prev')}> ❮ </button>
+                          <span>{currentPage} of {totalPages} pages</span>
+                          <button onClick={() => handlePageChange('next')}> ❯ </button>
                         </div>
                       </div>
                     </caption>
@@ -208,17 +170,17 @@ const MyPredictionsStocks = () => {
                       ))}
                     </tbody>
                   </table>
+                </div>
 
-                  </div>
-                )}
-            <div className='goback'>
-                <button onClick={() => goBack()}>Go back</button>
-            </div>
+              </div>
+            )}
           </div>
 
-          
-          
-        </div>
+
+          <div className='goback'>
+            <button onClick={() => goBack()}>Go back</button>
+          </div>
+
       </div>
   );
 };

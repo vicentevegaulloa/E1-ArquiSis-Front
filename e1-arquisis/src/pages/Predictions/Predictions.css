@@ -1,0 +1,31 @@
+.chart-container {
+  height: 200px;
+  width: 400px;
+}
+
+.up {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.up h3 {
+  margin-bottom: 10px;
+}
+
+.stock-card {
+  width: 300px;
+  font-size: 14px;
+}
+
+.stock-card p {
+  margin: 0px;
+}
+
+.stock-card input[type="number"] {
+  padding: 2px 8px;
+  font-size: 14px;
+}
+
+.down {
+  display: grid;
+}

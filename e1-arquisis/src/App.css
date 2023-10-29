@@ -116,13 +116,6 @@
   grid-template-columns: 210px auto;
 }
 
-.stock-card {
-  /* ... [existing styles] */
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
 .purchase-controls {
   display: flex;
   align-items: center;
