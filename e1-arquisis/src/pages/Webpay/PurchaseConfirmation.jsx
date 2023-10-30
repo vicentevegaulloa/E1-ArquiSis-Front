@@ -55,7 +55,7 @@ const PurchaseConfirmation = () => {
       setConfirmationStatus('User canceled the purchase');
       setIsLoading(false);
     }
-  }, [token_ws]);
+  }, [token_ws, getData, postData]);
 
   const confirmTransaction = async (token_ws) => {
     try {
