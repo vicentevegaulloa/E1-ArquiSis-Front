@@ -2,6 +2,9 @@
 ## Base URL
 [https://www.buy-stonks.tech/](https://www.buy-stonks.tech/)
 
+## API Documentation URL
+[https://go.postman.co/workspace/My-Workspace~b594f608-9edd-425c-8422-d27027f2ac13/collection/18244566-6b164fef-cda6-47f8-a441-75fb0aeb60b1]
+
 ## Guía de Instalación 
 Esta guía proporcionará instrucciones paso a paso para configurar y correr localmente la aplicación.
 

@@ -37,7 +37,7 @@ const UserWallet = () => {
     userId = getData.id;
   } else {
     userId = postData.id;
-  };
+  }
   
   console.log("User id: ", userId);
 

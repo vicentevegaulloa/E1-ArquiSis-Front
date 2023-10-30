@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Predictions.css';
 import callApi from '../../fetchData';
-import './Stocks.css';
 
 const companiesPerPage = 8;
 
-const AllCompanies = () => {
+const MyPredictionsCompanies = () => {
 
   const [postData, setPostData] = useState(null);
   const [getData, setGetData] = useState(null);
@@ -89,7 +89,7 @@ const AllCompanies = () => {
   const currentCompanies = companies.slice(startIndexC, endIndexC);
 
   const handleFilterSubmit = (symbol) => {
-    navigate(`/company/${symbol}`);
+    navigate(`/predictions/company/${symbol}`);
   };
   
   const goBack = () => {
@@ -97,53 +97,59 @@ const AllCompanies = () => {
   };
 
   return (
-    <div className="content">
-      <h2>Companies with available stocks</h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table className="table">
-          <caption>
-            <div className='tablecaptionspace'>
-              <div className="pagination">
-                  <button onClick={() => handlePageChangeC(currentPageC - 1)} disabled={currentPageC === 1}>
-                    ❮
-                  </button>
-                  <span>{currentPageC} of {totalPagesC} pages</span>
-                  <button onClick={() => handlePageChangeC(currentPageC + 1)} disabled={currentPageC === totalPagesC}>
-                    ❯
-                  </button>
-              </div>
-              <div className='selector'> 
-              <p>Order by</p>
-                <select onChange={(event) => handleChangeOrder(event)}>
-                  <option value="orderby_asc">A to Z</option>
-                  <option value="orderby_desc">Z to A</option>
-                </select>
-              </div>
-            </div>
-          </caption>
-          
-          <thead>
-          </thead>
+  
+      <div className="card-container">
+        <h2>My Predictions</h2>
+        <div className="user-info">
 
-          <tbody>
-            {currentCompanies.map((company) => (
-              <tr key={company.id} className="company-item">
-                <td>{company.shortName}</td>
-                <td style={{ textAlign: "center" }}>
-                  <button onClick={() => handleFilterSubmit(company.symbol)}>View stocks</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      <div className='goback'>
-        <button onClick={() => goBack()}>Go back</button>
+          <div className='pred-table'>
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <table className="table">
+                <caption>
+                    <div className='tablecaptionspace'>
+                    <div className="pagination">
+                        <button onClick={() => handlePageChangeC(currentPageC - 1)} disabled={currentPageC === 1}>
+                            ❮
+                        </button>
+                        <span>{currentPageC} of {totalPagesC} pages</span>
+                        <button onClick={() => handlePageChangeC(currentPageC + 1)} disabled={currentPageC === totalPagesC}>
+                            ❯
+                        </button>
+                    </div>
+                    <div className='selector'> 
+                    <p>Order by</p>
+                        <select onChange={(event) => handleChangeOrder(event)}>
+                        <option value="orderby_asc">A to Z</option>
+                        <option value="orderby_desc">Z to A</option>
+                        </select>
+                    </div>
+                    </div>
+                </caption>
+                
+                <thead>
+                </thead>
+
+                <tbody>
+                    {currentCompanies.map((company) => (
+                    <tr key={company.id} className="company-item">
+                        <td>{company.shortName}</td>
+                        <td style={{ textAlign: "center" }}>
+                        <button onClick={() => handleFilterSubmit(company.symbol)}>View predictions</button>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
+            )}
+            <div className='goback'>
+                <button onClick={() => goBack()}>Go back</button>
+            </div>
+          </div>          
+        </div>
       </div>
-    </div>
   );
 };
 
-export default AllCompanies;
+export default MyPredictionsCompanies;
