@@ -89,7 +89,7 @@ const CompanyStocks2 = () => {
       //let Predictor = await callApi(`/health`);
       let Predictor = true;
       if (Predictor) {
-        navigate(`/createpred`);  
+        navigate(`/createpred/${symbol}`);  
       } else {
         navigate(`/notworking`)
       }      

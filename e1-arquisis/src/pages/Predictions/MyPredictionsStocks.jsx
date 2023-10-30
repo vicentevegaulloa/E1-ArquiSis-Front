@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Predictions.css';
 import callApi from '../../fetchData';
 import Chart from "chart.js/auto";
@@ -10,26 +10,57 @@ Chart.register(CategoryScale);
 
 const MyPredictionsStocks = () => {
 
+  // const [postData, setPostData] = useState(null);
+  // const [getData, setGetData] = useState(null);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [latestStock, setLatestStock] = useState(null);
-  const [stockQuantity, setStockQuantity] = useState(0);
+  const [chartDataShown, setChartDataShown] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    const fetchPredData = async () => {
+      try {
+        const data = await callApi('/users', 'POST', true, {});
+        console.log('DataPost: ', data);
+        setUserId(data.id);
+      } catch (error) {
+        console.error(error);
+        try {
+          const data = await callApi('/users', 'GET');
+          console.log('DataGet: ', data);
+          setUserId(data.id);
+        } catch (retryError) {
+          console.error(retryError);
+        }
+      }
+    };
 
-  const { symbol } = useParams();
+    fetchPredData();
+  }, []);
+
+  // let userId;
+
+  // if (postData === null && getData === null) {
+  //   userId = null; // Handle the case when both are null
+  // } else if (postData === null) {
+  //   userId = getData.id;
+  // } else {
+  //   userId = postData.id;
+  // }
 
   useEffect(() => {
-    fetchData(symbol, currentPage);
-    fetchLatestStock(symbol);
-  }, [currentPage, symbol]);
+    fetchData();
+    // fetchLatestStock(symbol);
+  }, [userId]);
 
-  const fetchData = async (symbol, page) => {
+  const fetchData = async () => {
     try {
-      const {stockHistory, totalPages} = await callApi(`/stocks/${symbol}?page=${page}&size=10`);
-      setData(stockHistory); // Assuming the API returns an array called "data"
+      const predictions = await callApi(`/predictions/${userId}`, 'GET', true);
+      setData(predictions); // Assuming the API returns an array called "data"
       setTotalPages(totalPages); // Assuming the API returns a total pages count
       setIsLoading(false);
     } catch (error) {
@@ -38,14 +69,14 @@ const MyPredictionsStocks = () => {
     }
   };
 
-  const fetchLatestStock = async (symbol) => {
-    try {
-        const {stockHistory} = await callApi(`/stocks/${symbol}?page=1&size=1`);
-        setLatestStock(stockHistory[0]);
-    } catch (error) {
-        console.error('Failed to fetch latest stock data:', error);
-    }
-  };
+  // const fetchLatestStock = async (symbol) => {
+  //   try {
+  //       const {stockHistory} = await callApi(`/stocks/${symbol}?page=1&size=1`);
+  //       setLatestStock(stockHistory[0]);
+  //   } catch (error) {
+  //       console.error('Failed to fetch latest stock data:', error);
+  //   }
+  // }
 
   const handlePageChange = (direction) => {
     if (direction === 'next' && currentPage < totalPages) {
@@ -60,33 +91,60 @@ const MyPredictionsStocks = () => {
   };
 
   /* FALTA ENDPOINTTT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  */
-  const handlePrediction = async () => {
-    try {
-      console.log('Entered button'); 
-      //let Predictor = await callApi(`/health`);
-      let Predictor = true;
-      if (Predictor) {
-        navigate(`/createpred`);  
-        // tiene que añadir una fila en la tabla de predicciones
-      } else {
-        navigate(`/notworking`)
-      }      
-    } catch (error) {
-      console.error('Failed connect to worker:', error); 
-    }
-  };
+  // const handlePrediction = async () => {
+  //   try {
+  //     console.log('Entered button'); 
+  //     //let Predictor = await callApi(`/health`);
+  //     let Predictor = true;
+  //     if (Predictor) {
+  //       navigate(`/createpred`);  
+  //       // tiene que añadir una fila en la tabla de predicciones
+  //     } else {
+  //       navigate(`/notworking`)
+  //     }      
+  //   } catch (error) {
+  //     console.error('Failed connect to worker:', error); 
+  //   }
+  // };
 
-  const chartData = {
-    labels: data.map(stock => stock.datetime.split("T")[0]), // Assuming each stock has a datetime field
-    datasets: [
-      {
-        label: 'Stock Price',
-        data: data.map(stock => stock.price), // Assuming each stock has a price field
-        borderColor: 'rgba(75, 192, 192, 1)', // Line color
-        fill: false, // Don't fill the area under the line
-      },
-    ],
-  };
+  // const chartData = {
+  //   labels: data.map(stock => stock.datetime.split("T")[0]), // Assuming each stock has a datetime field
+  //   datasets: [
+  //     {
+  //       label: 'Stock Price',
+  //       data: data.map(stock => stock.price), // Assuming each stock has a price field
+  //       borderColor: 'rgba(75, 192, 192, 1)', // Line color
+  //       fill: false, // Don't fill the area under the line
+  //     },
+  //   ],
+  // };
+
+  const handlePrediction = async (pred) => {
+    try {
+      if (pred.result === null) { 
+        return;
+      }
+      // today + pred.daysBack
+      const predictionDate = new Date();
+      predictionDate.setDate(predictionDate.getDate() + pred.result.daysBack);
+      console.log('Prediction date:', pred.result.labels + [predictionDate.toISOString().split("T")[0]]);
+      console.log('Prediction data:', pred.result.data + [pred.result.prediction]);
+      const chartData = {
+        labels: pred.result.labels.concat([predictionDate.toISOString().split("T")[0]]),
+        datasets: [
+          {
+            label: `${pred.result.symbol} Stock Price`,
+            data: pred.result.data.concat([pred.result.prediction]),
+            borderColor: 'rgba(75, 192, 192, 1)', // Line color
+            fill: false, // Don't fill the area under the line
+          },
+        ]
+      }
+      setChartDataShown(chartData);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }
 
   return (
   
@@ -99,11 +157,13 @@ const MyPredictionsStocks = () => {
             ) : (
               <div>
                 <div className='up'>
+                  { chartDataShown &&
                   <div className='pred-chart'>
                     <h3>Predictions history</h3>
-                    <LineChart chartData={chartData} />
+                    <LineChart chartData={chartDataShown} />
                   </div>
-                  {latestStock && latestStock.price && (
+                  }
+                  {/* {latestStock && latestStock.price && (
                     <div className="stock-card">
                       <h3>Latest stock</h3>
                       <p><b>Short Name:</b> {latestStock.shortName}</p>
@@ -125,7 +185,7 @@ const MyPredictionsStocks = () => {
                         <button onClick={handlePrediction}>Create prediction</button>
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
                 <div className='down'>    
                   <table className="table">
@@ -140,28 +200,23 @@ const MyPredictionsStocks = () => {
                     </caption>
                     <thead>
                       <tr>
-                        <th>Short Name</th>
+                        <th>Job Id</th>
+                        <th>State</th>
+                        <th>Stocks</th>
+                        <th>Days Ahead</th>
                         <th>Symbol</th>
-                        <th>Price</th>
-                        <th>Date</th>
-                        <th>Time in UTC</th>
-                        <th>Current simulation net profit for {stockQuantity} stocks</th>
+                        <th>Prediction</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {data.map((stock) => (
-                        <tr key={stock.id} className="company-item">
-                          <td>{stock.shortName}</td>
-                          <td>{stock.symbol}</td>
-                          <td>{stock.price} {stock.currency}</td>
-                          <td>{stock.datetime.split("T")[0]}</td>
-                          <td>{stock.datetime.split("T")[1].replace("Z", "")}</td>
-                          <td>
-                          {(latestStock !== null && Object.keys(latestStock).length > 0)
-                              ? (stockQuantity * (latestStock.price - stock.price)).toFixed(2)
-                              : 0
-                            } {stock.currency}
-                          </td>
+                      {data.map((pred, i) => (
+                        <tr key={i} className="company-item" onClick={() => handlePrediction(pred)}>
+                          <td>{pred.id}</td>
+                          <td>{pred.state}</td>
+                          <td>{pred.result?.amount || '-'}</td>
+                          <td>{pred.result?.daysBack || '-'}</td>
+                          <td>{pred.result?.symbol || '-'}</td>
+                          <td>{pred.result?.prediction || '-'}</td>
                         </tr>
                       ))}
                     </tbody>

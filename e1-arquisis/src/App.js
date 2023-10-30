@@ -21,7 +21,6 @@ import CreatePred from "./pages/Predictions/CreatePrediction";
 import WorkerNotConnected from "./pages/Predictions/WorkerNotConnected";
 import ShowPrediction from "./pages/Predictions/ShowPrediction";
 import MyPredictionsStocks from "./pages/Predictions/MyPredictionsStocks"
-import MyPredictionsCompanies from "./pages/Predictions/MyPredictionsCompanies";
 
 Amplify.configure(awsExports);
 
@@ -105,10 +104,9 @@ const App = ({ signOut, user }) => {
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
                       <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
                       <Route path="/purchases" element={<PurchasesList2 />} />
-                      <Route path="/createpred" element={<CreatePred/>} />
+                      <Route path="/createpred/:symbol" element={<CreatePred/>} />
                       <Route path="/showpred" element={<ShowPrediction/>} /> 
-                      <Route path="/predictions" element={<MyPredictionsCompanies/>} />
-                      <Route path="/predictions/company/:symbol" element={<MyPredictionsStocks/>} />
+                      <Route path="/predictions" element={<MyPredictionsStocks/>} />
                       <Route path="/notworking" element={<WorkerNotConnected/>} />
 
                     </Routes>
