@@ -10,7 +10,9 @@ const CompanyStocks2 = () => {
   const [latestStock, setLatestStock] = useState(null);
   const [stockQuantity, setStockQuantity] = useState(1);
   const [message, setMessage] = useState(null);
-
+  const [purchaseUrl, setPurchaseUrl] = useState(''); 
+  const [purchaseToken, setPurchaseToken] = useState('');
+  
 
 
   const { symbol } = useParams();
@@ -57,14 +59,17 @@ const CompanyStocks2 = () => {
             console.error('Failed request 2:', error2);
         }
       }
-        try {
-          await callApi(`/purchases/${userId}`, "POST", true, {
-              userId,
-              stockId: latestStock.id,
-              quantity: stockQuantity,
-            });
-            setMessage("Purchase was made successfully!");
-          // Process response3 if needed
+      try {
+        const purchaseData = {
+          userId,
+          stockId: latestStock.id,
+          quantity: stockQuantity,
+        };
+        const purchaseResponse = await callApi(`/purchases/${userId}`, "POST", true, purchaseData);
+        setPurchaseUrl(purchaseResponse.url); 
+        setPurchaseToken(purchaseResponse.token);
+        setMessage("Purchase was made successfully!");
+        console.log('Response from request 3:', purchaseResponse);
         } catch (error3) {
           console.error('Failed request 3:', error3);
           setMessage("Purchase failed!");
@@ -125,6 +130,15 @@ const CompanyStocks2 = () => {
             </label>
             <button onClick={handleButtonClick}>Buy the latest stock</button>
             <button onClick={handlePrediction}>Create prediction</button>
+
+            {purchaseUrl && purchaseToken ? (
+                  <form action={purchaseUrl} method="POST">
+                    <input type="hidden" value={purchaseToken} name="token_ws" />
+                    <button type="submit">Confirm Purchase</button>
+                  </form>
+                ) : (
+                  <button type="button" onClick={handleButtonClick}>Buy Stonks</button>
+                )}
         </div>
         <br/>
         {message && <p className="message">{message}</p>}

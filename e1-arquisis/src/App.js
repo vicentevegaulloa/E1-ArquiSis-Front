@@ -10,6 +10,7 @@ import CompanyStocks2 from './pages/Stocks/CompanyStocks2';
 import UserWallet from './pages/UserWallet/UserWallet';
 import PurchasesList2 from './pages/PurchasesList/PurchasesList2';
 import HomePage from './pages/Homepage/Homepage';
+import PurchaseConfirmation from "./pages/Webpay/PurchaseConfirmation.jsx";
 
 import awsExports from "./aws-exports";
 
@@ -108,7 +109,7 @@ const App = ({ signOut, user }) => {
                       <Route path="/showpred" element={<ShowPrediction/>} /> 
                       <Route path="/predictions" element={<MyPredictionsStocks/>} />
                       <Route path="/notworking" element={<WorkerNotConnected/>} />
-
+                      <Route path="/purchase-confirmation/" element={<PurchaseConfirmation />} />                    
                     </Routes>
                   </div>
                 </div>
