@@ -68,7 +68,11 @@ const CompanyStocks2 = () => {
         const purchaseResponse = await callApi(`/purchases/${userId}`, "POST", true, purchaseData);
         setPurchaseUrl(purchaseResponse.url); 
         setPurchaseToken(purchaseResponse.token);
-        setMessage("Purchase was made successfully!");
+        if(purchaseResponse.url && purchaseResponse.token) {
+        setMessage("Purchase was made successfully!");}
+        else{
+        setMessage("Purchase failed!");
+        }
         console.log('Response from request 3:', purchaseResponse);
         } catch (error3) {
           console.error('Failed request 3:', error3);
@@ -128,7 +132,7 @@ const CompanyStocks2 = () => {
                     onChange={e => setStockQuantity(Number(e.target.value))} 
                 />
             </label>
-            <button onClick={handleButtonClick}>Buy the latest stock</button>
+            {/* <button onClick={handleButtonClick}>Buy the latest stock</button> */}
             <button onClick={handlePrediction}>Create prediction</button>
 
             {purchaseUrl && purchaseToken ? (
