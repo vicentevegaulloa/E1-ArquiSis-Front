@@ -54,10 +54,11 @@ const PurchasesList2 = () => {
             <tr>
               <th>Group ID</th>
               <th>Quantity</th>
+              <th>Unitary Cost</th>
               <th>Seller</th>
               <th>IP Address</th>
               <th>Date</th>
-              <th>Valid</th>
+              {/* <th>Valid</th> */}
               <th>State</th>
               <th>User ID</th>
               <th>Stock ID</th>
@@ -68,10 +69,11 @@ const PurchasesList2 = () => {
               <tr key={purchase.id}>
                 <td>{purchase.groupid}</td>
                 <td>{purchase.quantity}</td>
+                <td>{purchase.stock.price}</td>
                 <td>{purchase.seller}</td>
                 <td>{purchase.ipadress}</td>
                 <td>{purchase.datetime.split("T")[0]}</td>
-                <td>{purchase.valid ? "Valid" : "Not Valid"}</td>
+                {/* <td>{purchase.valid ? "Valid" : "Not Valid"}</td> */}
                 <td>{purchase.state}</td>
                 <td>{purchase.userId}</td>
                 <td>{purchase.stockId}</td>
