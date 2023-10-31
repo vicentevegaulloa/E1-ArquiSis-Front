@@ -8,8 +8,9 @@ function useQuery() {
 }
 
 const PurchaseConfirmation = () => {
-  const [postData, setPostData] = useState(null);
-  const [getData, setGetData] = useState(null);
+  // const [postData, setPostData] = useState(null);
+  // const [getData, setGetData] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [confirmationStatus, setConfirmationStatus] = useState('');
   const navigate = useNavigate();
@@ -22,13 +23,13 @@ const PurchaseConfirmation = () => {
       try {
         const data = await callApi('/users', 'POST', true, {});
         console.log('DataPost: ', data);
-        setPostData(data);
+        setUserId(data.id);
       } catch (error) {
         console.error(error);
         try {
           const data = await callApi('/users', 'GET');
           console.log('DataGet: ', data);
-          setGetData(data);
+          setUserId(data.id);
         } catch (retryError) {
           console.error(retryError);
         }
@@ -38,26 +39,27 @@ const PurchaseConfirmation = () => {
     fetchPredData();
   }, []);
 
-  let userId;
+  //let userId;
 
-  if (postData === null && getData === null) {
-    userId = null; // Handle the case when both are null
-  } else if (postData === null) {
-    userId = getData.id;
-  } else {
-    userId = postData.id;
-  }
+  // if (postData === null && getData === null) {
+  //   userId = null; // Handle the case when both are null
+  // } else if (postData === null) {
+  //   userId = getData.id;
+  // } else {
+  //   userId = postData.id;
+  // }
 
   useEffect(() => {
-    if (token_ws) {
-      confirmTransaction(token_ws);
-    } else {
+    if (token_ws && userId !== null) {
+      confirmTransaction(token_ws, userId);
+    } else if (!token_ws){
       setConfirmationStatus('User canceled the purchase');
       setIsLoading(false);
     }
-  }, [token_ws, getData, postData]);
+  }, [token_ws, userId]);
 
-  const confirmTransaction = async (token_ws) => {
+  const confirmTransaction = async (token_ws, userId) => {
+    console.log("userid ", userId)
     try {
       const response = await callApi(`/purchases/confirm-transaction/${userId}`, 'POST', true, { token_ws });
       if (response.response_code === 0) {
