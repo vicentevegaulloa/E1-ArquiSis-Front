@@ -5,7 +5,7 @@ import './Stocks.css';
 
 const companiesPerPage = 8;
 
-const AllCompanies = () => {
+const GroupsStocks = () => {
 
   const [postData, setPostData] = useState(null);
   const [getData, setGetData] = useState(null);
@@ -146,4 +146,4 @@ const AllCompanies = () => {
   );
 };
 
-export default AllCompanies;
+export default GroupsStocks;
