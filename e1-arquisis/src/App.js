@@ -23,6 +23,11 @@ import WorkerNotConnected from "./pages/Predictions/WorkerNotConnected";
 import ShowPrediction from "./pages/Predictions/ShowPrediction";
 import MyPredictionsStocks from "./pages/Predictions/MyPredictionsStocks"
 
+import GroupsStocks from './pages/GroupsStocks/GroupsStocks';
+import GroupStocks from './pages/GroupsStocks/GroupStocks';
+import AllUserStocks from './pages/GroupsStocks/AllUserStocks';
+import UserStocks from './pages/GroupsStocks/UserStocks';
+
 Amplify.configure(awsExports);
 
 // eslint-disable-next-line
@@ -45,6 +50,14 @@ const App = ({ signOut, user }) => {
 
   const seeStocks = () => {
     navigate(`/stocks`);
+  };
+
+  const seeGroupsStocks = () => {
+    navigate(`/groupsstocks`);
+  };
+
+  const seeUserStocks = () => {
+    navigate(`/userstocks`);
   };
 
   return (
@@ -89,10 +102,16 @@ const App = ({ signOut, user }) => {
                         () => myPredictions(user.userId)
                         }>My predictions</button></li>
                     </ul>
+                    <ul>
+                      <li><button onClick={() => seeUserStocks()}>Stocks bought</button></li>
+                    </ul>
                     <br></br>
                     <p><b>Buy available stocks</b></p>
                     <ul>
                       <li><button onClick={() => seeStocks()}>Latest stocks</button></li>
+                    </ul>
+                    <ul>
+                      <li><button onClick={() => seeGroupsStocks()}>Group stocks</button></li>
                     </ul>
                   </div>
 
@@ -109,7 +128,11 @@ const App = ({ signOut, user }) => {
                       <Route path="/showpred" element={<ShowPrediction/>} /> 
                       <Route path="/predictions" element={<MyPredictionsStocks/>} />
                       <Route path="/notworking" element={<WorkerNotConnected/>} />
-                      <Route path="/purchase-confirmation/" element={<PurchaseConfirmation />} />                    
+                      <Route path="/purchase-confirmation/" element={<PurchaseConfirmation />} />  
+                      <Route path="/groupsstocks" element={<GroupsStocks/>}></Route>
+                      <Route path="/groupsstocks/:symbol" element={<GroupStocks/>}></Route> 
+                      <Route path="/userstocks" element={<AllUserStocks user={user} signOut={signOut}/>} />        
+                      <Route path="/userstocks/:symbol" element={<UserStocks user={user} signOut={signOut}/>} />           
                     </Routes>
                   </div>
                 </div>
