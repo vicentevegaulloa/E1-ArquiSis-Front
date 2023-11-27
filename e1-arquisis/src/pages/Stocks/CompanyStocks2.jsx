@@ -141,7 +141,7 @@ const CompanyStocks2 = () => {
                     <button type="submit">Confirm Purchase</button>
                   </form>
                 ) : (
-                  <button type="button" onClick={handleButtonClick}>Buy Stonks</button>
+                  <button type="button" onClick={handleButtonClick}>Buy Stonks</button> 
                 )}
         </div>
         <br/>

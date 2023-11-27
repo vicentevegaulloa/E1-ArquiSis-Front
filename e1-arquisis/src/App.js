@@ -100,7 +100,6 @@ const App = ({ signOut, user }) => {
                     <Routes>
                       <Route path="/" element={<HomePage />} />
                       <Route path="/data" element={<FetchDataComponent/>}/>
-                      {/* <Route path="/company/:symbol" element={<CompanyStocks/>} /> */}
                       <Route path="/company/:symbol" element={<CompanyStocks2/>} />
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
                       <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
