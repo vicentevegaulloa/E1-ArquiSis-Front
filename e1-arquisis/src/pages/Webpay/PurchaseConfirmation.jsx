@@ -63,6 +63,7 @@ const PurchaseConfirmation = () => {
     try {
       const response = await callApi(`/purchases/confirm-transaction/${userId}`, 'POST', true, { token_ws });
       if (response.response_code === 0) {
+        
         setConfirmationStatus('Transaction was successful');
       } else {
         setConfirmationStatus('Transaction was rejected');

@@ -8,7 +8,7 @@ const UserCompanyStocks = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [latestStock, setLatestStock] = useState(null);
-  const [groupStock, setGroupStock] = useState(null);
+  const [groupStockQuantity, setGroupStockQuantity] = useState(0);
   const [stockQuantity, setStockQuantity] = useState(0);
   const [message, setMessage] = useState(null);
   const [purchaseUrl, setPurchaseUrl] = useState(''); 
@@ -47,11 +47,10 @@ const UserCompanyStocks = () => {
 
   const fetchGroupStock = async (symbol) => {
     try {
-        console.log("A")
-        const {groupCompanyStock} = await callApi(`/adminstocks/get-adminstocks`);
-        console.log("/A")
-        console.log(groupCompanyStock)
-        setGroupStock(groupCompanyStock[0]);
+        const {quantity} = await callApi(`/adminstocks/get-adminstocks/${symbol}?`);
+        if (quantity) {
+          setGroupStockQuantity(quantity);
+        }
     } catch (error) {
         console.error('Failed to fetch group stock data:', error);
     }
@@ -73,24 +72,34 @@ const UserCompanyStocks = () => {
             console.error('Failed request 2:', error2);
         }
       }
-      try {
-        const groupStockData = {
-          symbol: latestStock.symbol,
-          quantity: stockQuantity,
-        };
-        const purchaseResponse = await callApi(`/adminstocks/update-adminstock`, "PUT", true, groupStockData);
-        setPurchaseUrl(purchaseResponse.url); 
-        setPurchaseToken(purchaseResponse.token);
-        if(purchaseResponse.url && purchaseResponse.token) {
-        setMessage("Purchase was made successfully!");}
-        else{
+    try {
+      const groupStockData = {
+        symbol: latestStock.symbol,
+        quantity: stockQuantity,
+      };
+      const purchaseData = {
+        userId,
+        symbol: latestStock.symbol,
+        quantity: stockQuantity,
+      };
+      console.log("A")
+      const purchaseResponse = await callApi(`/purchases/buy-admin/${userId}`, "POST", true, purchaseData);
+      console.log("/A", purchaseResponse, purchaseResponse.url, purchaseResponse.token)
+      setPurchaseUrl(purchaseResponse.url); 
+      setPurchaseToken(purchaseResponse.token);
+      if(purchaseResponse.url && purchaseResponse.token) {
+        const {quantity} = await callApi(`/adminstocks/update-adminstock`, "PUT", true, groupStockData);
+        setGroupStockQuantity(quantity);
+        setMessage("Purchase was made successfully!");
+      }
+      else{
         setMessage("Purchase failed!");
-        }
-        console.log('Response from request 3:', purchaseResponse);
-        } catch (error3) {
-          console.error('Failed request 3:', error3);
-          setMessage("Purchase failed!");
-        }
+      }
+      console.log('Response from request 3:', purchaseResponse);
+      } catch (error3) {
+        console.error('Failed request 3:', error3);
+        setMessage("Purchase failed!");
+      }
   };
 
   const handlePageChange = (direction) => {
@@ -133,7 +142,7 @@ const UserCompanyStocks = () => {
         <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
         <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
         <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
-        {/* <p><strong>Quantity available:</strong> {groupStock.quantity}</p> */}
+        <p><strong>Quantity available:</strong> {groupStockQuantity}</p>
         
         
         <div className="purchase-controls">
@@ -142,12 +151,12 @@ const UserCompanyStocks = () => {
                 <input 
                     type="number" 
                     min="0" 
+                    max={groupStockQuantity}
                     step="0.01"
                     value={stockQuantity} 
                     onChange={e => setStockQuantity(Number(e.target.value))} 
                 />
             </label>
-            {/* <button onClick={handleButtonClick}>Buy the latest stock</button> */}
             <button onClick={handlePrediction}>Create prediction</button>
 
             {purchaseUrl && purchaseToken ? (
