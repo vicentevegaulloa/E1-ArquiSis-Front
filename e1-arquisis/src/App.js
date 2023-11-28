@@ -7,6 +7,7 @@ import FetchDataComponent from "./components/FetchDataComponent";
 import CompanyList from "./pages/CompanyList/CompanyList";
 import AllCompanies from './pages/Stocks/AllCompanies';
 import CompanyStocks2 from './pages/Stocks/CompanyStocks2';
+import UserCompanyStocks from './pages/Stocks/UserCompanyStocks';
 import UserWallet from './pages/UserWallet/UserWallet';
 import PurchasesList2 from './pages/PurchasesList/PurchasesList2';
 import HomePage from './pages/Homepage/Homepage';
@@ -101,6 +102,7 @@ const App = ({ signOut, user }) => {
                       <Route path="/" element={<HomePage />} />
                       <Route path="/data" element={<FetchDataComponent/>}/>
                       <Route path="/company/:symbol" element={<CompanyStocks2/>} />
+                      <Route path="/user/company/:symbol" element={<UserCompanyStocks/>} />
                       <Route path="/stocks" element={<AllCompanies/>}></Route>
                       <Route path="/wallet" element={<UserWallet user={user} signOut={signOut}/>} />
                       <Route path="/purchases" element={<PurchasesList2 />} />
