@@ -129,6 +129,18 @@ const UserCompanyStocks = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const enteredValue = Number(e.target.value);
+
+    if (enteredValue > groupStockQuantity) {
+      e.target.setCustomValidity(`Quantity cannot exceed ${groupStockQuantity}`);
+      setStockQuantity(groupStockQuantity);
+    } else {
+      e.target.setCustomValidity('');
+      setStockQuantity(enteredValue);
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -154,7 +166,8 @@ const UserCompanyStocks = () => {
                     max={groupStockQuantity}
                     step="0.01"
                     value={stockQuantity} 
-                    onChange={e => setStockQuantity(Number(e.target.value))} 
+                    onChange={handleChange}
+                    
                 />
             </label>
             <button onClick={handlePrediction}>Create prediction</button>
