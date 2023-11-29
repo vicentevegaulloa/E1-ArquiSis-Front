@@ -73,24 +73,27 @@ const UserCompanyStocks = () => {
         }
       }
     try {
-      const groupStockData = {
+      
+      const purchaseData = {
+        userId,
         symbol: latestStock.symbol,
         quantity: stockQuantity,
       };
-      const purchaseData = {
-        userId,
+      const groupStockData = {
         symbol: latestStock.symbol,
         quantity: stockQuantity,
       };
       console.log("A")
       const purchaseResponse = await callApi(`/purchases/buy-admin/${userId}`, "POST", true, purchaseData);
       console.log("/A", purchaseResponse, purchaseResponse.url, purchaseResponse.token)
+
       setPurchaseUrl(purchaseResponse.url); 
       setPurchaseToken(purchaseResponse.token);
+      
       if(purchaseResponse.url && purchaseResponse.token) {
         const {quantity} = await callApi(`/adminstocks/update-adminstock`, "PUT", true, groupStockData);
         setGroupStockQuantity(quantity);
-        setMessage("Purchase was made successfully!");
+        setMessage("Purchase allowed! Now please confirm.");
       }
       else{
         setMessage("Purchase failed!");
@@ -149,40 +152,48 @@ const UserCompanyStocks = () => {
         <div>
             {latestStock && (
     <div className="stock-card">
-        <p><strong>Short Name:</strong> {latestStock.shortName}</p>
-        <p><strong>Symbol:</strong> {latestStock.symbol}</p>
-        <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
-        <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
-        <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
-        <p><strong>Quantity available:</strong> {groupStockQuantity}</p>
-        
-        
-        <div className="purchase-controls">
-            <label>
-                Quantity:
-                <input 
-                    type="number" 
-                    min="0" 
-                    max={groupStockQuantity}
-                    step="0.01"
-                    value={stockQuantity} 
-                    onChange={handleChange}
-                    
-                />
-            </label>
-            <button onClick={handlePrediction}>Create prediction</button>
 
-            {purchaseUrl && purchaseToken ? (
-                  <form action={purchaseUrl} method="POST">
-                    <input type="hidden" value={purchaseToken} name="token_ws" />
-                    <button type="submit">Confirm Purchase</button>
-                  </form>
-                ) : (
-                  <button type="button" onClick={handleButtonClick}>Buy Stonks</button>
-                )}
+        <div className='controls'>
+          <div className='izq'>
+            <p><strong>Short Name:</strong> {latestStock.shortName}</p>
+            <p><strong>Symbol:</strong> {latestStock.symbol}</p>
+            <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
+            <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
+            <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
+            <p><strong>Quantity available:</strong> {groupStockQuantity}</p>
+          </div>
+          <div className='centro'>
+            <div className="purchase-controls">
+              <label>
+                  Quantity:
+                  <input 
+                      type="number" 
+                      min="0" 
+                      max={groupStockQuantity}
+                      step="0.01"
+                      value={stockQuantity} 
+                      onChange={handleChange}
+                      
+                  />
+              </label>
+              <button onClick={handlePrediction}>Create prediction</button>
+
+              {purchaseUrl && purchaseToken ? (
+                    <form action={purchaseUrl} method="POST">
+                      <input type="hidden" value={purchaseToken} name="token_ws" />
+                      <button type="submit">Confirm Purchase</button>
+                    </form>
+                  ) : (
+                    <button type="button" onClick={handleButtonClick}>Buy Stonks</button>
+                  )}
+            </div>
+            {message && <p className="message">{message}</p>}
+          </div>
+          <div className='der'>
+          </div>
         </div>
-        <br/>
-        {message && <p className="message">{message}</p>}
+        
+        
 
     </div>
 )}
