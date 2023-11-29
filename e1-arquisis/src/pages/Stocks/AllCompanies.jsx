@@ -89,7 +89,11 @@ const AllCompanies = () => {
   const currentCompanies = companies.slice(startIndexC, endIndexC);
 
   const handleFilterSubmit = (symbol) => {
-    navigate(`/company/${symbol}`);
+    if (getData.role === "ADMIN") {
+      navigate(`/company/${symbol}`);
+    } else {
+      navigate(`/user/company/${symbol}`);
+    }
   };
   
   const goBack = () => {

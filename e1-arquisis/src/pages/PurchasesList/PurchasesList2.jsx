@@ -61,7 +61,7 @@ const PurchasesList2 = () => {
               {/* <th>Valid</th> */}
               <th>State</th>
               <th>User ID</th>
-              <th>Stock ID</th>
+              <th>Group</th>
             </tr>
           </thead>
           <tbody>

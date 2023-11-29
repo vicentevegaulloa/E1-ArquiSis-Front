@@ -20,7 +20,9 @@ async function callApi(url, method = "GET", isProtected = true, body = null) {
     const data = await API.get("stocks", url, { headers });
     return data;
   } else if (method === "POST") {
+    console.log("B", url)
     const data = await API.post("stocks", url, { headers, body });
+    console.log("/B", url, data)
     return data;
   } else if (method === "PUT") {
     const data = await API.put("stocks", url, { headers, body });
@@ -30,5 +32,6 @@ async function callApi(url, method = "GET", isProtected = true, body = null) {
     return data;
   }
 }
+
 
 export default callApi;

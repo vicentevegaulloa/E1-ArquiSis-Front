@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import callApi from "../../fetchData"
 
-const CompanyStocks2 = () => {
+const UserCompanyStocks = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [latestStock, setLatestStock] = useState(null);
-  const [stockQuantity, setStockQuantity] = useState(1);
+  const [groupStockQuantity, setGroupStockQuantity] = useState(0);
+  const [stockQuantity, setStockQuantity] = useState(0);
   const [message, setMessage] = useState(null);
   const [purchaseUrl, setPurchaseUrl] = useState(''); 
   const [purchaseToken, setPurchaseToken] = useState('');
@@ -20,6 +21,7 @@ const CompanyStocks2 = () => {
   useEffect(() => {
     fetchData(symbol, currentPage);
     fetchLatestStock(symbol);
+    fetchGroupStock(symbol);
   }, [currentPage, symbol]);
 
   const fetchData = async (symbol, page) => {
@@ -43,6 +45,17 @@ const CompanyStocks2 = () => {
     }
   };
 
+  const fetchGroupStock = async (symbol) => {
+    try {
+        const {quantity} = await callApi(`/adminstocks/get-adminstocks/${symbol}?`);
+        if (quantity) {
+          setGroupStockQuantity(quantity);
+        }
+    } catch (error) {
+        console.error('Failed to fetch group stock data:', error);
+    }
+  };
+
   const handleButtonClick = async () => {
     let userId;
     try {
@@ -59,25 +72,37 @@ const CompanyStocks2 = () => {
             console.error('Failed request 2:', error2);
         }
       }
-      try {
-        const purchaseData = {
-          userId,
-          stockId: latestStock.id,
-          quantity: stockQuantity,
-        };
-        const purchaseResponse = await callApi(`/purchases/${userId}`, "POST", true, purchaseData);
-        setPurchaseUrl(purchaseResponse.url); 
-        setPurchaseToken(purchaseResponse.token);
-        if(purchaseResponse.url && purchaseResponse.token) {
-        setMessage("Purchase was made successfully!");}
-        else{
+    try {
+      
+      const purchaseData = {
+        userId,
+        symbol: latestStock.symbol,
+        quantity: stockQuantity,
+      };
+      const groupStockData = {
+        symbol: latestStock.symbol,
+        quantity: stockQuantity,
+      };
+      console.log("A")
+      const purchaseResponse = await callApi(`/purchases/buy-admin/${userId}`, "POST", true, purchaseData);
+      console.log("/A", purchaseResponse, purchaseResponse.url, purchaseResponse.token)
+
+      setPurchaseUrl(purchaseResponse.url); 
+      setPurchaseToken(purchaseResponse.token);
+      
+      if(purchaseResponse.url && purchaseResponse.token) {
+        const {quantity} = await callApi(`/adminstocks/update-adminstock`, "PUT", true, groupStockData);
+        setGroupStockQuantity(quantity);
+        setMessage("Purchase allowed! Now please confirm.");
+      }
+      else{
         setMessage("Purchase failed!");
-        }
-        console.log('Response from request 3:', purchaseResponse);
-        } catch (error3) {
-          console.error('Failed request 3:', error3);
-          setMessage("Purchase failed!");
-        }
+      }
+      console.log('Response from request 3:', purchaseResponse);
+      } catch (error3) {
+        console.error('Failed request 3:', error3);
+        setMessage("Purchase failed!");
+      }
   };
 
   const handlePageChange = (direction) => {
@@ -107,6 +132,18 @@ const CompanyStocks2 = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const enteredValue = Number(e.target.value);
+
+    if (enteredValue > groupStockQuantity) {
+      e.target.setCustomValidity(`Quantity cannot exceed ${groupStockQuantity}`);
+      setStockQuantity(groupStockQuantity);
+    } else {
+      e.target.setCustomValidity('');
+      setStockQuantity(enteredValue);
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -115,37 +152,48 @@ const CompanyStocks2 = () => {
         <div>
             {latestStock && (
     <div className="stock-card">
-        <p><strong>Short Name:</strong> {latestStock.shortName}</p>
-        <p><strong>Symbol:</strong> {latestStock.symbol}</p>
-        <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
-        <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
-        <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
-        
-        
-        <div className="purchase-controls">
-            <label>
-                Quantity:
-                <input 
-                    type="number" 
-                    min="1" 
-                    value={stockQuantity} 
-                    onChange={e => setStockQuantity(Number(e.target.value))} 
-                />
-            </label>
-            {/* <button onClick={handleButtonClick}>Buy the latest stock</button> */}
-            <button onClick={handlePrediction}>Create prediction</button>
 
-            {purchaseUrl && purchaseToken ? (
-                  <form action={purchaseUrl} method="POST">
-                    <input type="hidden" value={purchaseToken} name="token_ws" />
-                    <button type="submit">Confirm Purchase</button>
-                  </form>
-                ) : (
-                  <button type="button" onClick={handleButtonClick}>Buy Stonks</button> 
-                )}
+        <div className='controls'>
+          <div className='izq'>
+            <p><strong>Short Name:</strong> {latestStock.shortName}</p>
+            <p><strong>Symbol:</strong> {latestStock.symbol}</p>
+            <p><strong>Price:</strong> {latestStock.price} {latestStock.currency}</p>
+            <p><strong>Date:</strong> {latestStock.datetime.split("T")[0]}</p>
+            <p><strong>Time in UTC:</strong> {latestStock.datetime.split("T")[1].replace("Z", "")}</p>
+            <p><strong>Quantity available:</strong> {groupStockQuantity}</p>
+          </div>
+          <div className='centro'>
+            <div className="purchase-controls">
+              <label>
+                  Quantity:
+                  <input 
+                      type="number" 
+                      min="0" 
+                      max={groupStockQuantity}
+                      step="0.01"
+                      value={stockQuantity} 
+                      onChange={handleChange}
+                      
+                  />
+              </label>
+              <button onClick={handlePrediction}>Create prediction</button>
+
+              {purchaseUrl && purchaseToken ? (
+                    <form action={purchaseUrl} method="POST">
+                      <input type="hidden" value={purchaseToken} name="token_ws" />
+                      <button type="submit">Confirm Purchase</button>
+                    </form>
+                  ) : (
+                    <button type="button" onClick={handleButtonClick}>Buy Stonks</button>
+                  )}
+            </div>
+            {message && <p className="message">{message}</p>}
+          </div>
+          <div className='der'>
+          </div>
         </div>
-        <br/>
-        {message && <p className="message">{message}</p>}
+        
+        
 
     </div>
 )}
@@ -192,4 +240,4 @@ const CompanyStocks2 = () => {
   );
 }
 
-export default CompanyStocks2;
+export default UserCompanyStocks;

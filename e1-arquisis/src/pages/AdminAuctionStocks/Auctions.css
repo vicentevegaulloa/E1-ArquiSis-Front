@@ -31,12 +31,12 @@ caption {
   text-align: center;
   align-items: center;
 }
-  
+
 .table {
   width: 99%;
   border-collapse: collapse;
 }
-  
+
 .table th,
 .table td {
   border: 1px solid #d1d5da;
@@ -50,7 +50,7 @@ caption {
   font-size: 14px;
   color: #586069;
 }
-  
+
 .table td {
   font-size: 14px;
 }
@@ -58,7 +58,7 @@ caption {
 .table tbody tr:nth-child(even) {
   background-color: #f6f8fa;
 }
-  
+
 .td button {
   border-radius: 5%;
   padding: 12px;
@@ -71,7 +71,33 @@ caption {
   justify-content: center;
   padding: 10px;
 }
-    
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.form-container label {
+  margin-bottom: 10px;
+}
+
+.form-container input {
+  width: 150px;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.form-container button {
+  padding: 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 600px) {
   .table {
     font-size: 16px;
@@ -80,24 +106,7 @@ caption {
   .table td {
     padding: 10px;
   }
-}
-
-input {
-  width: 50px;
-  margin: 0 10px;
-}
-
-.controls {
-  padding: 15px 10px;
-  display: grid;
-  grid-template-columns: 250px auto 400px;
-}
-
-.centro {
-  display: grid;
-  align-items: center;
-}
-
-.der {
-  padding-left: 10px;
+  .form-container input {
+    width: 100%;
+  }
 }
