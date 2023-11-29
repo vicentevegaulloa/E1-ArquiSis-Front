@@ -1,0 +1,112 @@
+h2 {
+  margin: 0.5em 0;
+}
+
+caption {
+  display: table-caption;
+  justify-content: center;
+  height: auto;
+  font-weight: 100;
+  font-size: 14px;
+}
+
+.selector {
+  display: grid;
+  grid-template-columns: auto 150px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tablecaptionspace {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+}
+
+.pagination button {
+  border-radius: 50%;
+  border: none;
+  margin: 5px;
+  text-align: center;
+  align-items: center;
+}
+
+.table {
+  width: 99%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid #d1d5da;
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+  font-size: 14px;
+  color: #586069;
+}
+
+.table td {
+  font-size: 14px;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f6f8fa;
+}
+
+.td button {
+  border-radius: 5%;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.goback {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.form-container label {
+  margin-bottom: 10px;
+}
+
+.form-container input {
+  width: 150px;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.form-container button {
+  padding: 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  .table {
+    font-size: 16px;
+  }
+  .table th,
+  .table td {
+    padding: 10px;
+  }
+  .form-container input {
+    width: 100%;
+  }
+}

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import callApi from '../../fetchData';
 import './Auctions.css';
 import ErrorUserAccessAuctions from './ErrorUserAccessAuctions';
 
 const stocksPerPage = 10;
 
-const AllStocksToAuction = () => {
+const MakeProposal = () => {
   const [postData, setPostData] = useState(null);
   const [getData, setGetData] = useState(null);
 
@@ -45,37 +45,37 @@ const AllStocksToAuction = () => {
 
   const navigate = useNavigate();
 
-  const [stocksToAuction, setStocksToAuction] = useState([]);
+  const [adminStocks, setAdminStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [auctionMessage, setAuctionMessage] = useState('');
 
   const [currentPageC, setCurrentPageC] = useState(1);
 
   useEffect(() => {
-    const fetchStocksToAuction = async () => {
+    const fetchAdminStocks = async () => {
       try {
         const data = await callApi('/adminstocks/get-adminstocks');
 
-        setStocksToAuction(data);
-        console.log('stocksToAuction: ', data);
+        setAdminStocks(data);
+        console.log('adminStocks: ', data);
         setLoading(false);
       } catch (error) {
         console.error('Error al obtener datos:', error);
         setLoading(false);
       }
     };
-    fetchStocksToAuction();
+    fetchAdminStocks();
   }, []);
 
   const totalPagesC =
-    stocksToAuction.length === 0 ? 1 : Math.ceil(stocksToAuction.length / stocksPerPage);
+    adminStocks.length === 0 ? 1 : Math.ceil(adminStocks.length / stocksPerPage);
   const handlePageChangeC = (newPage) => {
     setCurrentPageC(newPage);
   };
 
   const startIndexC = (currentPageC - 1) * stocksPerPage;
   const endIndexC = startIndexC + stocksPerPage;
-  const currentStocksToAuction = stocksToAuction.slice(startIndexC, endIndexC);
+  const currentAdminStocks = adminStocks.slice(startIndexC, endIndexC);
 
   const isAdmin = postData ? postData.role === 'ADMIN' : getData ? getData.role === 'ADMIN' : false;
 
@@ -91,10 +91,15 @@ const AllStocksToAuction = () => {
     console.log(symbol);
   };
 
-  const handleAuctionStock = async () => {
+  const {id} = useParams();
+  
+
+  const handleMakeProposal = async () => {
     console.log('handleAuctionStock is called');
     try {
+        
       const auctionData = {
+        offerId: id,
         symbol: selectedSymbol,
         quantity: selectedQuantity,
       };
@@ -102,7 +107,7 @@ const AllStocksToAuction = () => {
 
       await callApi('/auctions/offers', 'POST', true, auctionData);
       console.log('handleAuctionStock is called');
-      setAuctionMessage('Auction was successful!');
+      setAuctionMessage('Proposal was successful!');
       
       setTimeout(() => {
         window.location.reload();
@@ -110,7 +115,7 @@ const AllStocksToAuction = () => {
 
     } catch (error) {
       console.error('Failed to perform auction:', error);
-      setAuctionMessage('Failed to perform auction');
+      setAuctionMessage('Failed to perform proposal');
     }
   };
 
@@ -122,7 +127,7 @@ const AllStocksToAuction = () => {
     <div className="content">
       {isAdmin ? (
         <div>
-          <h2>Stocks available for auction</h2>
+          <h2>Make a proposal to group Offer</h2>
 
           {selectedSymbol && (
             <div className="form-container">
@@ -136,8 +141,8 @@ const AllStocksToAuction = () => {
                   onChange={(e) => setSelectedQuantity(Number(e.target.value))}
                 />
               </label>
-              <button type="button" onClick={handleAuctionStock}>
-                Auction Selected Stock
+              <button type="button" onClick={handleMakeProposal }>
+                Make a Proposal with selected Stock
               </button>
               {auctionMessage && <p className="message">{auctionMessage}</p>}
             </div>
@@ -178,7 +183,7 @@ const AllStocksToAuction = () => {
                 </thead>
 
                 <tbody>
-                  {currentStocksToAuction.map((stock) => (
+                  {currentAdminStocks.map((stock) => (
                     <tr key={stock.id} className="company-item">
                       <td>{stock.symbol}</td>
                       <td>{stock.quantity}</td>
@@ -209,4 +214,4 @@ const AllStocksToAuction = () => {
   );
 };
 
-export default AllStocksToAuction;
+export default MakeProposal;

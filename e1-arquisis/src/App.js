@@ -24,6 +24,12 @@ import WorkerNotConnected from "./pages/Predictions/WorkerNotConnected";
 import ShowPrediction from "./pages/Predictions/ShowPrediction";
 import MyPredictionsStocks from "./pages/Predictions/MyPredictionsStocks"
 
+import AllStocksToAuction from "./pages/AdminAuctionStocks/AllStocksToAuction.jsx";
+import OwnOffers from "./pages/AdminAuctionStocks/OwnOffers";
+import OwnOffersProposals from "./pages/AdminAuctionStocks/OwnOffersProposals.jsx";
+import AllOffers from "./pages/AdminAuctionStocks/AllOffers.jsx";
+import MakeProposal from "./pages/AdminAuctionStocks/MakeProposal.jsx";
+
 Amplify.configure(awsExports);
 
 // eslint-disable-next-line
@@ -47,6 +53,20 @@ const App = ({ signOut, user }) => {
   const seeStocks = () => {
     navigate(`/stocks`);
   };
+
+  const seeAdminStocks = () => {
+    navigate(`/admin/get-adminstocks`);
+  };
+
+  const seeOwnOffers = () => {
+    navigate(`/admin/own-offers`);
+  };
+
+  const seeAllOffers = () => {
+    navigate(`/admin/all-offers`);
+  };
+
+
 
   return (
     <>
@@ -95,6 +115,16 @@ const App = ({ signOut, user }) => {
                     <ul>
                       <li><button onClick={() => seeStocks()}>Latest stocks</button></li>
                     </ul>
+                    <p><b>Auction Menu</b></p>
+                    <ul>
+                      <li><button onClick={() => seeAdminStocks()}>Stocks to Auction</button></li>
+                    </ul>
+                    <ul>
+                      <li><button onClick={() => seeOwnOffers()}>Own Offers</button></li>
+                    </ul>
+                    <ul>
+                      <li><button onClick={() => seeAllOffers()}>Groups Offers</button></li>
+                    </ul>
                   </div>
 
                   <div className="page">
@@ -110,7 +140,12 @@ const App = ({ signOut, user }) => {
                       <Route path="/showpred" element={<ShowPrediction/>} /> 
                       <Route path="/predictions" element={<MyPredictionsStocks/>} />
                       <Route path="/notworking" element={<WorkerNotConnected/>} />
-                      <Route path="/purchase-confirmation/" element={<PurchaseConfirmation />} />                    
+                      <Route path="/purchase-confirmation/" element={<PurchaseConfirmation />} />   
+                      <Route path="/admin/get-adminstocks" element={<AllStocksToAuction />} /> 
+                      <Route path="/admin/own-offers" element={<OwnOffers />} /> 
+                      <Route path="/auctions/proposals/:id" element={<OwnOffersProposals />} />
+                      <Route path="/admin/all-offers" element={<AllOffers />} /> 
+                      <Route path="/admin/make-proposal/:id" element={<MakeProposal />} /> 
                     </Routes>
                   </div>
                 </div>
