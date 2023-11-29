@@ -93,7 +93,7 @@ const UserCompanyStocks = () => {
       if(purchaseResponse.url && purchaseResponse.token) {
         const {quantity} = await callApi(`/adminstocks/update-adminstock`, "PUT", true, groupStockData);
         setGroupStockQuantity(quantity);
-        setMessage("Purchase was made successfully!");
+        setMessage("Purchase allowed! Now please confirm.");
       }
       else{
         setMessage("Purchase failed!");
