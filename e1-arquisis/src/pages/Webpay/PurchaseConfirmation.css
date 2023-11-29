@@ -4,11 +4,10 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    font-family: Arial, sans-serif;
   }
   
   .your-heading {
-    font-size: 24px;
+    font-size: 18px;
     margin: 0;
   }
   

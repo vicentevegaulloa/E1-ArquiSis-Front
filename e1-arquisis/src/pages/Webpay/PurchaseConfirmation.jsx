@@ -39,16 +39,6 @@ const PurchaseConfirmation = () => {
     fetchPredData();
   }, []);
 
-  //let userId;
-
-  // if (postData === null && getData === null) {
-  //   userId = null; // Handle the case when both are null
-  // } else if (postData === null) {
-  //   userId = getData.id;
-  // } else {
-  //   userId = postData.id;
-  // }
-
   useEffect(() => {
     if (token_ws && userId !== null) {
       confirmTransaction(token_ws, userId);
@@ -80,9 +70,9 @@ const PurchaseConfirmation = () => {
         <p>Loading...</p>
       ) : (
         <div>
-          <h1 className="your-heading">Transaction Confirmation</h1> 
+          <h4 className="your-heading">Transaction state</h4> 
           <p className="your-message">{confirmationStatus}</p> 
-          <button onClick={() => navigate('/')} className="your-button">Back to Home</button> 
+          <button onClick={() => navigate('/stocks')} className="your-button">Back to Stocks</button> 
         </div>
       )}
     </div>
